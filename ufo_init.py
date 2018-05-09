@@ -9,16 +9,31 @@ font = OpenFont(ufo)
 
 # Latin mappings
 latins = {
+    # For deva, a Latin font has not been selected
+
+    # deva
+    'Panini': 'gentium',
+    'Kautilya': 'gentium',
+    'Maurya': 'gentium',
+
+    # knda
     'KAN Badami': 'gentium',
-    'KAN Kaveri': 'exo'
+    'KAN Kaveri': 'exo',
+
+    # taml
+    'ThiruValluvar': 'gentium',
+    'Auvaiyar': 'charis',
+    'Vaigai': 'gentium'
     }
 
 xheights = {
+    'charis': 987,
     'gentium': 930,
     'exo': 1096
     }
 
 capheights = {
+    'charis': 1374,
     'gentium': 1260,
     'exo': 1509
     }
