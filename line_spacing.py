@@ -19,6 +19,9 @@ metric = metrics[font.info.familyName]
 descender, ascender = metric
 
 # Modify UFO
+font.info.ascender = ascender
+font.info.descender = descender
+
 font.info.openTypeOS2WinAscent = ascender
 font.info.openTypeOS2WinDescent = -descender
 
