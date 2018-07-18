@@ -1,3 +1,5 @@
 com.schriftgestaltung.disablesAutomaticAlignment,true
 com.schriftgestaltung.disablesLastChange,true
 com.schriftgestaltung.useNiceNames,false
+com.schriftgestaltung.width,Regular
+com.schriftgestaltung.widthValue,100
