@@ -8,6 +8,7 @@ do
         s=${styles[$si]} # si is the index into the array styles
         ufo=${f}-${s/ /}.ufo
 
+        echo "setting metrics in UFO ${ufo}"
         psfnormalize -p backup=0 -v 3 -p checkfix=none $ufo
         ../tools/encoding.py $ufo
         ${nlci}/heights.py $ufo
@@ -15,7 +16,9 @@ do
 
         echo "setting family ${f} and style ${s} in UFO ${ufo}"
         psfsetkeys -p backup=0 -k familyName         -v "${f}" $ufo
+        psfsetkeys -p backup=0 -k openTypeNamePreferredFamilyName -v "${f}" $ufo
         psfsetkeys -p backup=0 -k styleName          -v "${s}" $ufo
+        psfsetkeys -p backup=0 -k openTypeNamePreferredSubfamilyName -v "${s}" $ufo
         psfsetkeys -p backup=0 -k styleMapFamilyName -v "${f} ${s}" $ufo
         psfsetkeys -p backup=0 -k styleMapStyleName  -v "${s,,}" $ufo
 
@@ -37,4 +40,5 @@ done
 rm -rf backups
 popd
 
+echo "now running preflight"
 ./preflight
