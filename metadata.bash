@@ -15,12 +15,12 @@ do
         ${nlci}/line_spacing.py $ufo
 
         echo "setting family ${f} and style ${s} in UFO ${ufo}"
-        psfsetkeys -p backup=0 -k familyName         -v "${f}" $ufo
-        psfsetkeys -p backup=0 -k openTypeNamePreferredFamilyName -v "${f}" $ufo
-        psfsetkeys -p backup=0 -k styleName          -v "${s}" $ufo
+        psfsetkeys -p backup=0 -k familyName                         -v "${f}" $ufo
+        psfsetkeys -p backup=0 -k openTypeNamePreferredFamilyName    -v "${f}" $ufo
+        psfsetkeys -p backup=0 -k styleName                          -v "${s}" $ufo
         psfsetkeys -p backup=0 -k openTypeNamePreferredSubfamilyName -v "${s}" $ufo
-        psfsetkeys -p backup=0 -k styleMapFamilyName -v "${f} ${s}" $ufo
-        psfsetkeys -p backup=0 -k styleMapStyleName  -v "${s,,}" $ufo
+        psfsetkeys -p backup=0 -k styleMapFamilyName                 -v "${f} ${s}" $ufo
+        psfsetkeys -p backup=0 -k styleMapStyleName                  -v "${s,,}" $ufo
 
         echo "setting general keys in UFO ${ufo}"
         psfsetkeys -p backup=0 -i ${nlci}/fontinfo.csv -k "openTypeNameDescription" -v "$desc_long" $ufo
@@ -42,3 +42,4 @@ popd
 
 echo "now running preflight"
 ./preflight
+echo "done running preflight"

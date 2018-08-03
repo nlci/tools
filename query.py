@@ -10,9 +10,9 @@ font = OpenFont(ufo)
 # Query UFO
 
 # Make sure we only have one layer
-print('{} (default)'.format(font.defaultLayerName)) # could also be font.defaultLayer.name
+print(f'{font.defaultLayerName} (default)') # could also be font.defaultLayer.name
 for layer in font.layers:
-    print('{} (layer)'.format(layer.name))
+    print(f'{layer.name} (layer)')
 
 # taml
 for glyph in font:
