@@ -9,6 +9,9 @@ font = OpenFont(ufo)
 
 # Line spacing metrics
 metrics = {
+    # beng
+    'Bhagirati': (-1012, 2152), # from taml, needs to be adjusted
+
     # knda
     'KAN Badami': (-1012, 2152), # from taml, needs to be adjusted
     'KAN Kaveri': (-1012, 2152), # from taml, needs to be adjusted

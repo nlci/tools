@@ -11,6 +11,9 @@ font = OpenFont(ufo)
 latins = {
     # For deva, a Latin font has not been selected
 
+    # beng
+    'Bhagirati': 'gentium1000',
+
     # deva
     'Panini': 'gentium2048',
     'Kautilya': 'gentium2048',
