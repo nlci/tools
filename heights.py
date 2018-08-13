@@ -9,15 +9,13 @@ font = OpenFont(ufo)
 
 # Latin mappings
 latins = {
-    # For deva, a Latin font has not been selected
-
     # beng
     'Bhagirati': 'gentium1000',
 
     # deva
-    'Panini': 'gentium2048',
-    'Kautilya': 'gentium2048',
-    'Maurya': 'gentium1000',
+    'Panini': 'charis2048',
+    'Kautilya': 'charis2048',
+    'Maurya': 'charis1000',
 
     # knda
     'KAN Badami': 'gentium1000',

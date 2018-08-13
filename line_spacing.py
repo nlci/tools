@@ -12,6 +12,11 @@ metrics = {
     # beng
     'Bhagirati': (-1012, 2152), # from taml, needs to be adjusted
 
+    # deva
+    'Panini': (-1012, 2152), # from taml, needs to be adjusted
+    'Kautilya': (-1012, 2152), # from taml, needs to be adjusted
+    'Maurya': (-1012, 2152), # from taml, needs to be adjusted
+
     # knda
     'KAN Badami': (-1012, 2152), # from taml, needs to be adjusted
     'KAN Kaveri': (-1012, 2152), # from taml, needs to be adjusted
