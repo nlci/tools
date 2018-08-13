@@ -17,6 +17,9 @@ metrics = {
     'Kautilya': (-1012, 2152), # from taml, needs to be adjusted
     'Maurya': (-1012, 2152), # from taml, needs to be adjusted
 
+    # guru
+    'Arjun': (-1012, 2152), # from taml, needs to be adjusted
+
     # knda
     'KAN Badami': (-1012, 2152), # from taml, needs to be adjusted
     'KAN Kaveri': (-1012, 2152), # from taml, needs to be adjusted

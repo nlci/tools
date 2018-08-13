@@ -17,6 +17,9 @@ latins = {
     'Kautilya': 'charis2048',
     'Maurya': 'charis1000',
 
+    # guru
+    'Arjun': 'sophia_nubian1000',
+
     # knda
     'KAN Badami': 'gentium1000',
     'KAN Kaveri': 'exo1000',
@@ -32,6 +35,7 @@ xheights = {
     'charis1000': round(987 * 1000/2048),
     'gentium2048': 930,
     'gentium1000': round(930 * 1000/2048),
+    'sophia_nubian1000': 500,
     'exo1000': 536
     }
 
@@ -40,6 +44,7 @@ capheights = {
     'charis1000': round(1374 * 1000/2048),
     'gentium2048': 1260,
     'gentium1000': round(1260 * 1000/2048),
+    'sophia_nubian1000': 722,
     'exo1000': 738
     }
 
