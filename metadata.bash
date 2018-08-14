@@ -1,6 +1,16 @@
 #!/bin/bash
 
 pushd ${src}
+rm -rf *.ufo
+for sfd in *-???*.sfd
+do
+    echo $sfd
+    ufo2="$(basename $sfd .sfd).ufo"
+    fontforge -script ${nlci}/sfd2ufo.ff $sfd $ufo2
+done
+popd
+
+pushd ${src}
 for f in $faces
 do
     for si in ${!styles[@]} # loop over indices
