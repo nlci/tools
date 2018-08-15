@@ -27,7 +27,12 @@ latins = {
     # taml
     'ThiruValluvar': 'gentium2048',
     'Auvaiyar': 'charis1000',
-    'Vaigai': 'gentium1000'
+    'Vaigai': 'gentium1000',
+
+    # telu
+    'Nirmal': 'gentium1000',
+    'Asha': 'gentium2048',
+    'Elur': 'sophia_nubian2048'
     }
 
 xheights = {
@@ -36,6 +41,7 @@ xheights = {
     'gentium2048': 930,
     'gentium1000': round(930 * 1000/2048),
     'sophia_nubian1000': 500,
+    'sophia_nubian2048': round(500 * 2048/1000),
     'exo1000': 536
     }
 
@@ -45,6 +51,7 @@ capheights = {
     'gentium2048': 1260,
     'gentium1000': round(1260 * 1000/2048),
     'sophia_nubian1000': 722,
+    'sophia_nubian2048': round(722 * 2048/1000),
     'exo1000': 738
     }
 

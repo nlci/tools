@@ -27,7 +27,12 @@ metrics = {
     # taml
     'ThiruValluvar': (-1012, 2152), # v0.271 had (-1029, 2650)
     'Auvaiyar': (-494, 1042),
-    'Vaigai': (-494, 1057)
+    'Vaigai': (-494, 1057),
+
+    # telu
+    'Nirmal': (-1012, 2152), # from taml, needs to be adjusted
+    'Asha': (-1012, 2152), # from taml, needs to be adjusted
+    'Elur': (-1012, 2152) # from taml, needs to be adjusted
     }
 
 metric = metrics[font.info.familyName]
