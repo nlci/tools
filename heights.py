@@ -17,6 +17,9 @@ latins = {
     'Kautilya': 'charis2048',
     'Maurya': 'charis1000',
 
+    # gujr
+    'Gir': 'charis1000',
+
     # guru
     'Arjun': 'sophia_nubian1000',
 
