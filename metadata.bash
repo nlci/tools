@@ -11,12 +11,15 @@ done
 popd
 
 pushd ${src}
-for f in $faces
+for fi in ${!faces[@]} # loop over indices
 do
+    f=${faces[$fi]} # fi is the index into the array faces
+
     for si in ${!styles[@]} # loop over indices
     do
         s=${styles[$si]} # si is the index into the array styles
-        ufo=${f}-${s/ /}.ufo
+
+        ufo=${f/ /}-${s/ /}.ufo # remove spaces in both face and style strings
 
         echo "setting metrics in UFO ${ufo}"
         psfnormalize -p backup=0 -v 3 -p checkfix=none $ufo
