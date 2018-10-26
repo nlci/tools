@@ -21,6 +21,7 @@ popd
 
 rm -f ${src}/*-???*.sfd
 export FLOWARGS=""
+rm -rf .lock-smithresults results
 smith distclean -l
 smith configure -l
 smith build -l
