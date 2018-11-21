@@ -24,8 +24,8 @@ latins = {
     'Arjun': 'sophia_nubian1000',
 
     # knda
-    'KAN Badami': 'gentium1000',
-    'KAN Kaveri': 'exo1000',
+    'Badami': 'gentium1000',
+    'Kaveri': 'exo1000',
 
     # taml
     'ThiruValluvar': 'gentium2048',
