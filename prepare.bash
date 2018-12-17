@@ -43,6 +43,7 @@ do
     grep StartChar $sfd /dev/null | sort | uniq -d
 done
 
+echo "Checking for matching glyph inventory"
 for sfd in *.sfd
 do
     grep StartChar $sfd | sort > ${sfd}.glyphs

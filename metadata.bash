@@ -47,6 +47,9 @@ do
         else
             psfsetkeys -p backup=0 -k "com.schriftgestaltung.weightValue" -v "400" --plist lib $ufo
         fi
+
+        echo "importing glyphs in UFO ${ufo}"
+        ../tools/import.bash "${f}" "${s/ /}" $ufo
     done
 done
 
