@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PYTHONPATH=${nlci}
+
 cp -p -v ${ufo}/*.sfd ${src}
 
 sort -o cs/charis/pre.txt cs/charis/composite.txt cs/charis/decomposition.txt
