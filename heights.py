@@ -27,6 +27,9 @@ latins = {
     'Badami': 'gentium1000',
     'Kaveri': 'exo1000',
 
+    # guru
+    'Asika': 'sophia_nubian1000',
+
     # taml
     'ThiruValluvar': 'gentium2048',
     'Auvaiyar': 'charis1000',

@@ -27,6 +27,9 @@ metrics = {
     'Badami': (-1012, 2152), # from taml, needs to be adjusted
     'Kaveri': (-1012, 2152), # from taml, needs to be adjusted
 
+    # orya
+    'Asika': (-1012, 2152), # from taml, needs to be adjusted
+
     # taml
     'ThiruValluvar': (-1012, 2152), # v0.271 had (-1029, 2650)
     'Auvaiyar': (-494, 1042),
