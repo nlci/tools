@@ -27,7 +27,7 @@ latins = {
     'Badami': 'gentium1000',
     'Kaveri': 'exo1000',
 
-    # guru
+    # orya
     'Asika': 'sophia_nubian1000',
 
     # taml
@@ -41,35 +41,42 @@ latins = {
     'Elur': 'sophia_nubian2048'
     }
 
+workshops = {
+    # taml
+    'ThiruValluvar': 0.9,
+    'Auvaiyar': 0.9,
+    'Vaigai': 0.9
+    }
+
 xheights = {
     'charis2048': 987,
-    'charis1000': round(987 * 1000/2048),
+    'charis1000': 987 * 1000/2048,
     'gentium2048': 930,
-    'gentium1000': round(930 * 1000/2048),
+    'gentium1000': 930 * 1000/2048,
     'sophia_nubian1000': 500,
-    'sophia_nubian2048': round(500 * 2048/1000),
+    'sophia_nubian2048': 500 * 2048/1000,
     'exo1000': 536
     }
 
 capheights = {
     'charis2048': 1374,
-    'charis1000': round(1374 * 1000/2048),
+    'charis1000': 1374 * 1000/2048,
     'gentium2048': 1260,
-    'gentium1000': round(1260 * 1000/2048),
+    'gentium1000': 1260 * 1000/2048,
     'sophia_nubian1000': 722,
-    'sophia_nubian2048': round(722 * 2048/1000),
+    'sophia_nubian2048': 722 * 2048/1000,
     'exo1000': 738
     }
 
-latin = latins[font.info.familyName]
-xheight = xheights[latin]
-capheight = capheights[latin]
+family = font.info.familyName
+latin = latins[family]
+workshop = workshops.get(family, 1/1.4)
+xheight = round(xheights[latin] * workshop)
+capheight = round(capheights[latin] * workshop)
 
 # Modify UFO
-if font.info.xHeight is None:
-    font.info.xHeight = xheight
-if font.info.capHeight is None:
-    font.info.capHeight = capheight
+font.info.xHeight = xheight
+font.info.capHeight = capheight
 
 # Save UFO
 font.changed()

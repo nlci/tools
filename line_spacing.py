@@ -8,37 +8,38 @@ ufo = sys.argv[1]
 font = OpenFont(ufo)
 
 # Line spacing metrics
+# If there are two numbers for an expression, the second number is for a diacritic.
 metrics = {
     # beng
-    'Bhagirati': (-1012, 2152), # from taml, needs to be adjusted
+    'Bhagirati': (-159, 881),
 
     # deva
-    'Panini': (-1012, 2152), # from taml, needs to be adjusted
-    'Kautilya': (-1012, 2152), # from taml, needs to be adjusted
-    'Maurya': (-1012, 2152), # from taml, needs to be adjusted
+    'Panini': (-665, 1384),
+    'Kautilya': (-627, 1426),
+    'Maurya': (-284, 747),
 
     # gujr
-    'Gir': (-1012, 2152), # from taml, needs to be adjusted
+    'Gir': (-402, 801),
 
     # guru
-    'Arjun': (-1012, 2152), # from taml, needs to be adjusted
+    'Arjun': (-4, 659),
 
     # knda
-    'Badami': (-1012, 2152), # from taml, needs to be adjusted
-    'Kaveri': (-1012, 2152), # from taml, needs to be adjusted
+    'Badami': (-326-200, 604),
+    'Kaveri': (-316-200, 686),
 
     # orya
-    'Asika': (-1012, 2152), # from taml, needs to be adjusted
+    'Asika': (-333, 804),
 
     # taml
-    'ThiruValluvar': (-1012, 2152), # v0.271 had (-1029, 2650)
-    'Auvaiyar': (-494, 1042),
-    'Vaigai': (-494, 1057),
+    'ThiruValluvar': (-512-202, 1520+455),
+    'Auvaiyar': (-342-99, 693+222),
+    'Vaigai': (-250-99, 742+229),
 
     # telu
-    'Nirmal': (-1012, 2152), # from taml, needs to be adjusted
-    'Asha': (-1012, 2152), # from taml, needs to be adjusted
-    'Elur': (-1012, 2152) # from taml, needs to be adjusted
+    'Nirmal': (-421, 625),
+    'Asha': (-903, 1263),
+    'Elur': (-903, 1521)
     }
 
 metric = metrics[font.info.familyName]
