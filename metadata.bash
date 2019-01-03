@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export deva="../../../../deva/fonts/panini/source"
+export taml="../../../../taml/fonts/thiruvalluvar/source"
+
 pushd ${src}
 rm -rf *.ufo
 for sfd in *-???*.sfd
@@ -50,6 +53,13 @@ do
 
         echo "importing glyphs in UFO ${ufo}"
         ../tools/import.bash "${f}" "${s/ /}" $ufo
+        # echo "fixing glyphs in UFO ${ufo}"
+        # ../tools/cleanup.py $ufo
+        if [ -f composites.txt ]
+        then
+            echo "building composites in UFO ${ufo}"
+            psfbuildcomp -i composites.txt $ufo
+        fi
     done
 done
 

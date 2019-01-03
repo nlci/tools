@@ -6,15 +6,14 @@ import sys
 
 from wscript import *
 
+# Latin
 charis = '../../../latn/fonts/charis_local/5.000/zip/unhinted/CharisSIL'
 gentium = '../../../latn/fonts/gentium_local/basic/1.102/zip/unhinted/GenBkBas'
+sophia = '../../../copt/fonts/sophia_nubian/1.000/zip/unhinted/SN'
+exo = '../../../latn/fonts/exo/1.500/zip/unhinted/Exo-'
+
+# Devanagari
 annapurna = '../../../deva/fonts/annapurna_local/1.203/zip/unhinted/AnnapurnaSIL-'
-panini = '../../../deva/fonts/panini-master/source/Panini'
-exo = '../../../latn/fonts/exo/1.500/zip/unhinted/1000/Exo-'
-deva = '../../../deva/fonts/panini/source/'
-thiruvalluvar = '../../../taml/fonts/thiruvalluvar/source/ThiruValluvar'
-vaigai = '../../../taml/fonts/thiruvalluvar/source/Vaigai'
-exo = '../../../latn/fonts/exo/1.500/zip/unhinted/1000/Exo-'
 
 def runCommand(cmd, ifont, ofont):
     cmd = 'ffcopyglyphs' + ' -f ' + cmd + ' ' + ifont + ' ' + ofont
