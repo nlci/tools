@@ -28,6 +28,10 @@ metrics = {
     'Badami': (-326-200, 604),
     'Kaveri': (-316-200, 686),
 
+    # mlym
+    'Vayalar': (-3, 596),
+    'Malabar': (-2, 600),
+
     # orya
     'Asika': (-333, 804),
 

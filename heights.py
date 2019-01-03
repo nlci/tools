@@ -27,6 +27,10 @@ latins = {
     'Badami': 'gentium1000',
     'Kaveri': 'exo1000',
 
+    # mlym
+    'Vayalar': 'gentium1000',
+    'Malabar': 'gentium1000',
+
     # orya
     'Asika': 'sophia_nubian1000',
 
@@ -42,6 +46,10 @@ latins = {
     }
 
 workshops = {
+    # mlym
+    'Vayalar': 1/1.2,
+    'Malabar': 1/1.2,
+
     # taml
     'ThiruValluvar': 0.9,
     'Auvaiyar': 0.9,
