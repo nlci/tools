@@ -8,8 +8,9 @@ rm -rf *.ufo
 for sfd in *-???*.sfd
 do
     echo $sfd
-    ufo2="$(basename $sfd .sfd).ufo"
-    fontforge -script ${nlci}/sfd2ufo.ff $sfd $ufo2
+    fontfilename="$(basename $sfd .sfd)"
+    fontforge -script ${nlci}/sfd2ufo.ff $sfd ${fontfilename}.ufo2
+    mv -v ${fontfilename}.ufo2 ${fontfilename}.ufo
 done
 popd
 
