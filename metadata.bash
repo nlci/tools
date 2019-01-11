@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export beng="../../../../beng/fonts/bhagirati/source"
 export deva="../../../../deva/fonts/panini/source"
 export taml="../../../../taml/fonts/thiruvalluvar/source"
 
