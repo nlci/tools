@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PYTHONPATH=${nlci}
+export PYTHONPATH=${nlci}:/usr/local/lib/python3.6/site-packages
 
 cp -p -v ${ufo}/*.sfd ${src}
 

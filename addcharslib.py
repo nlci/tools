@@ -17,7 +17,7 @@ annapurna = '../../../deva/fonts/annapurna_local/1.203/zip/unhinted/AnnapurnaSIL
 
 def runCommand(cmd, ifont, ofont):
     cmd = 'ffcopyglyphs' + ' -f ' + cmd + ' ' + ifont + ' ' + ofont
-    print cmd
+    print(cmd)
     os.system(cmd)
 
 def findFile(filename):
