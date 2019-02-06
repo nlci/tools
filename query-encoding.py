@@ -14,7 +14,7 @@ cmap = dict()
 for glyph in font:
 
     # Only check encoded glyphs
-    if glyph.unicode is None and len(glyph.unicodes) == 0:
+    if len(glyph.unicodes) == 0:
         continue
 
     # Check for a USV used by another glyph
@@ -38,12 +38,8 @@ for glyph in font:
         pass
 
     # Ligatures should not be encoded
-    if '.' in glyph.name:
+    if '.' in glyph.name or '_' in glyph.name:
         print(f'glyph {glyph.name} is a ligature but has an encoding of U+{glyph.unicode:04X}')
-
-    # Check consistency of UFO
-    if len(glyph.unicodes) == 0:
-        print(f'glyph {glyph.name} does not fully specify the USV')
 
     # Ensure the same USV is specified
     if glyph.unicode != glyph.unicodes[0]:
