@@ -10,8 +10,9 @@ for sfd in *-???*.sfd
 do
     echo $sfd
     fontfilename="$(basename $sfd .sfd)"
-    fontforge -script ${nlci}/sfd2ufo.ff $sfd ${fontfilename}.ufo2
-    mv -v ${fontfilename}.ufo2 ${fontfilename}.ufo
+    fontforge -script ${nlci}/sfd2ufo.ff $sfd ${fontfilename}.ufo3
+    mv -v ${fontfilename}.ufo3 ${fontfilename}.ufo
+    cp -p -v ${nlci}/layercontents.plist ${fontfilename}.ufo
 done
 popd
 
