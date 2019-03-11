@@ -12,7 +12,6 @@ do
     fontfilename="$(basename $sfd .sfd)"
     fontforge -script ${nlci}/sfd2ufo.ff $sfd ${fontfilename}.ufo3
     mv -v ${fontfilename}.ufo3 ${fontfilename}.ufo
-    cp -p -v ${nlci}/layercontents.plist ${fontfilename}.ufo
 done
 popd
 
@@ -38,6 +37,7 @@ do
         psfsetkeys -p backup=0 -k openTypeNamePreferredFamilyName    -v "${f}" $ufo
         psfsetkeys -p backup=0 -k styleName                          -v "${s}" $ufo
         psfsetkeys -p backup=0 -k openTypeNamePreferredSubfamilyName -v "${s}" $ufo
+        psfsetkeys -p backup=0 -k postscriptFullName                 -v "${f} ${s}" $ufo
         psfsetkeys -p backup=0 -k styleMapFamilyName                 -v "${f} ${s}" $ufo
         psfsetkeys -p backup=0 -k styleMapStyleName                  -v "${s,,}" $ufo
 
