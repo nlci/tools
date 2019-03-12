@@ -63,6 +63,8 @@ do
             echo "building composites in UFO ${ufo}"
             psfbuildcomp -i composites.txt $ufo
         fi
+        echo "listing glyphs in UFO ${ufo}"
+        ${nlci}/ufo2glyphdata.py $HOME/pub/doc/Adobe/agl-aglfn/aglfn.txt $ufo glyph_data-${f}.csv
     done
 done
 

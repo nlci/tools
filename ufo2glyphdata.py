@@ -81,12 +81,18 @@ for glyph in font:
 
     # Find the codepoint of each part of the ligature
     codepoints = list()
+    rename = True
     for base_name in ligature_name.split('_'):
         if base_name in cmap:
             codepoint = cmap[base_name]
             codepoints.append(codepoint)
         else:
             print(f'Cannot find {base_name} in font')
+            rename = False
+
+    if not rename:
+        # Some glyphs are not associated with a codepoint
+        continue
 
     if ligature_name in aglfn:
         # Keep glyph names listed or based on the the AGLFN unchanged
@@ -104,9 +110,9 @@ for glyph in font:
             sep = '_'
 
         # Rename glyphs by creating a new glyph name
-        new_name = ligature_prefix \
-                   + sep.join([glyph_prefix + format_codepoint(codepoint) for codepoint in codepoints]) \
-                   + dot_name + modify_name
+        new_ligature_name_parts = [glyph_prefix + format_codepoint(codepoint) for codepoint in codepoints]
+        new_ligature_name = sep.join(new_ligature_name_parts)
+        new_name = ligature_prefix + new_ligature_name + dot_name + modify_name
 
     # Sorting is determined based on the codepoint associated with the first part of a ligature.
     first_codepoint = codepoints[0]
