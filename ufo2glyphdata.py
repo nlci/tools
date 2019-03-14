@@ -87,7 +87,7 @@ for glyph in font:
             codepoint = cmap[base_name]
             codepoints.append(codepoint)
         else:
-            print(f'Cannot find {base_name} in font')
+            print(f'Cannot find base {base_name} in font for glyph {glyph.name}')
             rename = False
 
     if not rename:
@@ -124,7 +124,7 @@ for glyph in font:
 
 # Output data
 with open(sys.argv[3], 'w', newline='') as glyph_data_file:
-    glyph_data = csv.writer(glyph_data_file)
+    glyph_data = csv.writer(glyph_data_file, lineterminator = '\n')
     glyph_data.writerow(headers)
     sort_count = 0
 
