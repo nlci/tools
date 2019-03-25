@@ -73,11 +73,11 @@ for glyph in font:
     first_codepoint = glyph.unicode
     usv = format_codepoint(glyph.unicode)
 
-    # Split off the modifier part (the text after after the full stop)
+    # Split off the suffix (the text after after the full stop)
     glyph_name_parts = glyph.name.partition('.')
     ligature_name = glyph_name_parts[0]
     dot_name = glyph_name_parts[1]
-    modify_name = glyph_name_parts[2]
+    suffix_name = glyph_name_parts[2]
 
     # Find the codepoint of each part of the ligature
     codepoints = list()
@@ -112,7 +112,7 @@ for glyph in font:
         # Rename glyphs by creating a new glyph name
         new_ligature_name_parts = [glyph_prefix + format_codepoint(codepoint) for codepoint in codepoints]
         new_ligature_name = sep.join(new_ligature_name_parts)
-        new_name = ligature_prefix + new_ligature_name + dot_name + modify_name
+        new_name = ligature_prefix + new_ligature_name + dot_name + suffix_name
 
     # Sorting is determined based on the codepoint associated with the first part of a ligature.
     first_codepoint = codepoints[0]
