@@ -12,7 +12,7 @@ rm -rf $prep
 mkdir $prep
 for ttf in *.ttf
 do
-    rm -f tmp.ttf
+    rm -f $tmp
     hackos2 -t 0 $ttf $tmp
     ttfstriphints $tmp ${prep}/${ttf}
     rm -f $tmp
@@ -50,3 +50,5 @@ do
 done
 sha1sum *.glyphs | sort
 popd
+
+cp -p -v ${ufo}/*.sfd ${src}

@@ -4,6 +4,7 @@ export beng="../../../../beng/fonts/bhagirati/source"
 export deva="../../../../deva/fonts/panini/source"
 export taml="../../../../taml/fonts/thiruvalluvar/source"
 
+# Convert SFD to UFO
 pushd ${src}
 rm -rf *.ufo
 for sfd in *-???*.sfd
@@ -15,6 +16,27 @@ do
 done
 popd
 
+# Initial modifications to the UFOs
+for ufo in ${src}/*.ufo
+do
+    echo "setting metrics in UFO ${ufo}"
+    psfnormalize -p backup=0 -v 3 -p checkfix=none $ufo
+    ./tools/encoding.py $ufo
+    ${nlci}/heights.py $ufo
+    ${nlci}/line_spacing.py $ufo
+
+    if [ -f ${src}/delete_latin_glyphs.txt ]
+    then
+        echo "deleting latin glyphs (to be re-added later) in UFO ${ufo}"
+        psfdeleteglyphs -i ${src}/delete_latin_glyphs.txt $ufo
+    fi
+done
+
+# Add many Latin glyphs to the UFOs
+export PYTHONPATH=${nlci}
+./addchars.py ${src} ${nlci}
+
+# Further modifications to the UFOs using face and style names
 pushd ${src}
 for fi in ${!faces[@]} # loop over indices
 do
@@ -25,12 +47,6 @@ do
         s=${styles[$si]} # si is the index into the array styles
 
         ufo=${f/ /}-${s/ /}.ufo # remove spaces in both face and style strings
-
-        echo "setting metrics in UFO ${ufo}"
-        psfnormalize -p backup=0 -v 3 -p checkfix=none $ufo
-        ../tools/encoding.py $ufo
-        ${nlci}/heights.py $ufo
-        ${nlci}/line_spacing.py $ufo
 
         echo "setting family ${f} and style ${s} in UFO ${ufo}"
         psfsetkeys -p backup=0 -k familyName                         -v "${f}" $ufo

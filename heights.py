@@ -21,7 +21,7 @@ latins = {
     'Gir': 'charis1000',
 
     # guru
-    'Arjun': 'sophia_nubian1000',
+    'Arjun': 'sourcesans1000',
 
     # knda
     'Badami': 'gentium1000',
@@ -32,7 +32,7 @@ latins = {
     'Malabar': 'gentium1000',
 
     # orya
-    'Asika': 'sophia_nubian1000',
+    'Asika': 'sourcesans1000',
 
     # taml
     'ThiruValluvar': 'gentium2048',
@@ -42,7 +42,7 @@ latins = {
     # telu
     'Nirmal': 'gentium1000',
     'Asha': 'gentium2048',
-    'Elur': 'sophia_nubian2048'
+    'Elur': 'sourcesans2048'
     }
 
 workshops = {
@@ -61,8 +61,8 @@ xheights = {
     'charis1000': 987 * 1000/2048,
     'gentium2048': 930,
     'gentium1000': 930 * 1000/2048,
-    'sophia_nubian1000': 500,
-    'sophia_nubian2048': 500 * 2048/1000,
+    'sourcesans1000': 486,
+    'sourcesans2048': 486 * 2048/1000,
     'exo1000': 536
     }
 
@@ -71,8 +71,8 @@ capheights = {
     'charis1000': 1374 * 1000/2048,
     'gentium2048': 1260,
     'gentium1000': 1260 * 1000/2048,
-    'sophia_nubian1000': 722,
-    'sophia_nubian2048': 722 * 2048/1000,
+    'sourcesans1000': 656,
+    'sourcesans2048': 656 * 2048/1000,
     'exo1000': 738
     }
 
