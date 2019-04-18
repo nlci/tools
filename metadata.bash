@@ -30,6 +30,9 @@ do
         echo "deleting latin glyphs (to be re-added later) in UFO ${ufo}"
         psfdeleteglyphs -i ${src}/delete_latin_glyphs.txt $ufo
     fi
+
+    # Save needed anchors
+    $HOME/script/tools/anchor-keep.py mark $ufo
 done
 
 # Add many Latin glyphs to the UFOs
@@ -47,6 +50,9 @@ do
         s=${styles[$si]} # si is the index into the array styles
 
         ufo=${f/ /}-${s/ /}.ufo # remove spaces in both face and style strings
+
+        # Restore needed anchors
+        $HOME/script/tools/anchor-keep.py only $ufo
 
         echo "setting family ${f} and style ${s} in UFO ${ufo}"
         psfsetkeys -p backup=0 -k familyName                         -v "${f}" $ufo

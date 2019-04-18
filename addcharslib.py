@@ -27,7 +27,7 @@ def modifyFile(scale, fontname, f, sn, lsn = ''):
         lsn = sn
 
     # Input data
-    aglfn = os.path.join(nlci, 'aglfn-nr.txt')
+    aglfn = os.path.join(nlci, 'aglfn-nr.csv')
     fontpath = eval(fontname)
     latin = f'{fontpath}-{lsn}.ufo'
 
