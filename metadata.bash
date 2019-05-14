@@ -60,7 +60,7 @@ do
         psfsetkeys -p backup=0 -k styleName                          -v "${s}" $ufo
         psfsetkeys -p backup=0 -k openTypeNamePreferredSubfamilyName -v "${s}" $ufo
         psfsetkeys -p backup=0 -k postscriptFullName                 -v "${f} ${s}" $ufo
-        psfsetkeys -p backup=0 -k styleMapFamilyName                 -v "${f} ${s}" $ufo
+        psfsetkeys -p backup=0 -k styleMapFamilyName                 -v "${f}" $ufo
         psfsetkeys -p backup=0 -k styleMapStyleName                  -v "${s,,}" $ufo
 
         echo "setting general keys in UFO ${ufo}"
