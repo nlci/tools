@@ -32,7 +32,7 @@ def modifyFile(scale, fontname, f, sn, lsn = ''):
     latin = f'{fontpath}-{lsn}.ufo'
 
     # List of glyphs to copy
-    glyphs = os.path.join(src, f'copyglyphs-{fontname}-{lsn}-{f}-{sn}.txt')
+    glyphs = os.path.join(src, 'copyglyphs', f'{fontname}-{lsn}-{f}-{sn}.txt')
 
     cmd = f'psfgetglyphnames -a {aglfn} -i cs/main_import.txt {latin} {glyphs}'
     print(cmd)

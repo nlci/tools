@@ -4,6 +4,16 @@ export beng="../../../../beng/fonts/bhagirati/source"
 export deva="../../../../deva/fonts/panini/source"
 export taml="../../../../taml/fonts/thiruvalluvar/source"
 
+# Convert to friendly working glyph names
+pushd ${src}
+for sfd in *-???*.sfd
+do
+    echo $sfd
+    perl $HOME/script/zind/bin/codepoint2name.pl -c $sfd -n tmp.sfd -m $HOME/script/zind/fonts/indictable.tsv
+    mv tmp.sfd $sfd
+done
+popd
+
 # Convert SFD to UFO
 pushd ${src}
 rm -rf *.ufo
@@ -36,6 +46,9 @@ do
 done
 
 # Add many Latin glyphs to the UFOs
+rm -f ${src}/copyglyphs-*
+rm -rf ${src}/copyglyphs
+mkdir ${src}/copyglyphs
 export PYTHONPATH=${nlci}
 ./addchars.py ${src} ${nlci}
 
@@ -93,9 +106,9 @@ do
     done
 done
 
-rm -rf backups
 popd
 
 echo "now running preflight"
 ./preflight
 echo "done running preflight"
+rm -rf ${src}/backups

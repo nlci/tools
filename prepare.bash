@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export ufo=results/ufo
-export src=source
 # grep -E "faces|styles" wscript | grep = > wscript.py
 rm -f *.sfd
 
