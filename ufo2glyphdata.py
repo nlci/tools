@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 from fontParts.world import *
-import sys
 import csv
 from operator import attrgetter
+import argparse
 
 
 class GlyphData(object):
@@ -31,9 +31,23 @@ def is_bmp(codepoint):
     return True
 
 
+# Command line arguments
+parser = argparse.ArgumentParser(description='Generate glyph_data.csv from UFO')
+parser.add_argument('-s', '--script', help='GlyphsApp script extension to strip from glyph names')
+parser.add_argument('-v', '--virama', help='Codepoint (hex) of virama to use when the inherent vowel was killed')
+parser.add_argument('aglfn', help='Adobe Glyph List For New Fonts')
+parser.add_argument('ufo', help='UFO to read')
+parser.add_argument('csv', help='CSV file to output', nargs='?', default='glyph_data.csv')
+parser.add_argument('--version', action='version', version='%(prog)s 0.2')
+args = parser.parse_args()
+
+script_id = ''
+if args.script:
+    script_id = '-' + args.script
+
 # Load Adobe Glyph List For New Fonts (AGLFN)
 aglfn = list()
-with open(sys.argv[1], newline='') as aglfn_file:
+with open(args.aglfn, newline='') as aglfn_file:
     for line in aglfn_file:
 
         # Ignore comments
@@ -49,14 +63,19 @@ with open(sys.argv[1], newline='') as aglfn_file:
         aglfn.append(aglfn_name)
 
 # Open UFO
-ufo = sys.argv[2]
-font = OpenFont(ufo)
+font = OpenFont(args.ufo)
 
 # Gather data from the UFO
 cmap = dict()
 for glyph in font:
     if glyph.unicode:
-        cmap[glyph.name] = glyph.unicode
+        glyph_name = glyph.name
+
+        # Do not store the script ID
+        if glyph_name.endswith(script_id):
+            glyph_name = glyph_name.replace(script_id, '')
+
+        cmap[glyph_name] = glyph.unicode
 
 # Create glyph data CSV file
 headers = ('glyph_name', 'ps_name', 'sort_final', 'USV')
@@ -69,24 +88,40 @@ for glyph in font:
         continue
 
     # Output the data for the rest of the glyphs
-    new_name = glyph.name
-    first_codepoint = glyph.unicode
+    glyph_name = glyph.name
+    new_name = glyph_name
     usv = format_codepoint(glyph.unicode)
 
     # Split off the suffix (the text after after the full stop)
-    glyph_name_parts = glyph.name.partition('.')
+    # and the script ID, if either (or both) exist.
+    glyph_name_parts = glyph_name.partition('.')
     ligature_name = glyph_name_parts[0]
     dot_name = glyph_name_parts[1]
     suffix_name = glyph_name_parts[2]
 
     # Find the codepoint of each part of the ligature
     codepoints = list()
+    found = False
     rename = True
-    for base_name in ligature_name.split('_'):
+    base_ligature_name = ligature_name
+    if base_ligature_name.endswith(script_id):
+        base_ligature_name = base_ligature_name.replace(script_id, '')
+    for base_name in base_ligature_name.split('_'):
         if base_name in cmap:
             codepoint = cmap[base_name]
             codepoints.append(codepoint)
-        else:
+            found = True
+        elif args.virama:
+            # Look for the name with the inherent vowel appended
+            base_name_plus = base_name + 'a'
+            if base_name_plus in cmap:
+                codepoint = cmap[base_name_plus]
+                codepoints.append(codepoint)
+                # Also include the virama since that is what caused
+                # the inherent vowel to be removed from the glyph name
+                codepoints.append(int(args.virama, 16))
+                found = True
+        if not found:
             print(f'Cannot find base {base_name} in font for glyph {glyph.name}')
             rename = False
 
@@ -123,7 +158,7 @@ for glyph in font:
 
 
 # Output data
-with open(sys.argv[3], 'w', newline='') as glyph_data_file:
+with open(args.csv, 'w', newline='') as glyph_data_file:
     glyph_data = csv.writer(glyph_data_file, lineterminator = '\n')
     glyph_data.writerow(headers)
     sort_count = 0
