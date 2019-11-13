@@ -70,11 +70,6 @@ cmap = dict()
 for glyph in font:
     if glyph.unicode:
         glyph_name = glyph.name
-
-        # Do not store the script ID
-        if glyph_name.endswith(script_id):
-            glyph_name = glyph_name.replace(script_id, '')
-
         cmap[glyph_name] = glyph.unicode
 
 # Create glyph data CSV file
@@ -101,25 +96,31 @@ for glyph in font:
 
     # Find the codepoint of each part of the ligature
     codepoints = list()
-    found = False
     rename = True
+    latin_script = True
     base_ligature_name = ligature_name
-    if base_ligature_name.endswith(script_id):
+    if args.script and base_ligature_name.endswith(script_id):
+        latin_script = False
         base_ligature_name = base_ligature_name.replace(script_id, '')
     for base_name in base_ligature_name.split('_'):
-        if base_name in cmap:
-            codepoint = cmap[base_name]
-            codepoints.append(codepoint)
-            found = True
-        elif args.virama:
+        found = False
+        if args.virama:
             # Look for the name with the inherent vowel appended
-            base_name_plus = base_name + 'a'
+            base_name_plus = base_name + 'a' + script_id
             if base_name_plus in cmap:
                 codepoint = cmap[base_name_plus]
                 codepoints.append(codepoint)
                 # Also include the virama since that is what caused
                 # the inherent vowel to be removed from the glyph name
                 codepoints.append(int(args.virama, 16))
+                found = True
+        if not found:
+            base_name_plus = base_name
+            if not latin_script:
+                base_name_plus = base_name + script_id
+            if base_name_plus in cmap:
+                codepoint = cmap[base_name_plus]
+                codepoints.append(codepoint)
                 found = True
         if not found:
             print(f'Cannot find base {base_name} in font for glyph {glyph.name}')
@@ -149,11 +150,15 @@ for glyph in font:
         new_ligature_name = sep.join(new_ligature_name_parts)
         new_name = ligature_prefix + new_ligature_name + dot_name + suffix_name
 
-    # Sorting is determined based on the codepoint associated with the first part of a ligature.
-    first_codepoint = codepoints[0]
+    # Sorting is determined based on the codepoint
+    # associated with the first part of a ligature,
+    # or the codepoint of the character if not a ligature.
+    sort_unicode = codepoints[0]
+    if glyph.unicode:
+        sort_unicode = glyph.unicode
 
     # Record glyph data for later sorting.
-    gd = GlyphData(glyph.name, new_name, usv, first_codepoint)
+    gd = GlyphData(glyph.name, new_name, usv, sort_unicode)
     most_glyphs.append(gd)
 
 
