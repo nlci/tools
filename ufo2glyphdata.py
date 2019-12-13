@@ -2,6 +2,7 @@
 
 from fontParts.world import *
 import csv
+import sys
 from operator import attrgetter
 import argparse
 
@@ -96,7 +97,6 @@ for glyph in font:
 
     # Find the codepoint of each part of the ligature
     codepoints = list()
-    rename = True
     latin_script = True
     base_ligature_name = ligature_name
     if args.script and base_ligature_name.endswith(script_id):
@@ -124,15 +124,14 @@ for glyph in font:
                 found = True
         if not found:
             print(f'Cannot find base {base_name} in font for glyph {glyph.name}')
-            rename = False
-
-    if not rename:
-        # Some glyphs are not associated with a codepoint
-        continue
 
     if ligature_name in aglfn:
-        # Keep glyph names listed or based on the the AGLFN unchanged
-        pass
+        # Keep glyph names listed in or based on the AGLFN unchanged
+        if not glyph.unicode:
+            codepoints.append(sys.maxunicode)
+    elif len(codepoints) == 0:
+        # Some glyphs are not associated with a codepoint so we sort them at the end
+        codepoints.append(sys.maxunicode)
     else:
         # Determine the needed format of glyph names.
         max_codepoint = max(codepoints)
@@ -152,7 +151,9 @@ for glyph in font:
 
     # Sorting is determined based on the codepoint
     # associated with the first part of a ligature,
-    # or the codepoint of the character if not a ligature.
+    # or the codepoint of the character if not a ligature,
+    # or by alphabetical order if there is no codepoint
+    # associated with the glyph.
     sort_unicode = codepoints[0]
     if glyph.unicode:
         sort_unicode = glyph.unicode
