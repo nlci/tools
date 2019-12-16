@@ -16,12 +16,18 @@ gd = csv.DictReader(csv_file)
 ## Read glyph names from UFO
 ufo_glyph_list = set()
 for glyph in font:
-    ufo_glyph_list.add(glyph.name)
+    glyph_name = glyph.name
+    if glyph_name in ufo_glyph_list:
+        print(f'error: {glyph_name} is duplicated in UFO')
+    ufo_glyph_list.add(glyph_name)
 
 ## Read glyph names from CSV file
 gd_glyph_list = set()
 for row in gd:
-    gd_glyph_list.add(row['glyph_name'])
+    glyph_name = row['glyph_name']
+    if glyph_name in gd_glyph_list:
+        print(f'error: {glyph_name} is duplicated in glyph_data.csv')
+    gd_glyph_list.add(glyph_name)
 
 ## Show differences
 length = len(gd_glyph_list)

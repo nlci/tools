@@ -17,6 +17,7 @@ popd
 # Convert SFD to UFO
 pushd ${src}
 rm -rf *.ufo
+rm -f *.log
 for sfd in *-???*.sfd
 do
     echo $sfd
