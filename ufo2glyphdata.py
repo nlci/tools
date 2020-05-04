@@ -32,14 +32,23 @@ def is_bmp(codepoint):
     return True
 
 
+def make_row(glyph_name, ps_name, sort_final, usv, keep_name):
+    """Return arguments, omitting ps_name if no renaming needs to be done"""
+    if keep_name:
+        return (glyph_name, sort_final, usv)
+    else:
+        return (glyph_name, ps_name, sort_final, usv)
+
+
 # Command line arguments
 parser = argparse.ArgumentParser(description='Generate glyph_data.csv from UFO')
+parser.add_argument('-u', '--uni', help='Do not rename glyphs. This assumes glyphs are already AGLFN or start with u or uni', action='store_true')
 parser.add_argument('-s', '--script', help='GlyphsApp script extension to strip from glyph names')
 parser.add_argument('-v', '--virama', help='Codepoint (hex) of virama to use when the inherent vowel was killed')
 parser.add_argument('aglfn', help='Adobe Glyph List For New Fonts')
 parser.add_argument('ufo', help='UFO to read')
 parser.add_argument('csv', help='CSV file to output', nargs='?', default='glyph_data.csv')
-parser.add_argument('--version', action='version', version='%(prog)s 0.2')
+parser.add_argument('--version', action='version', version='%(prog)s 0.3')
 args = parser.parse_args()
 
 script_id = ''
@@ -166,16 +175,17 @@ for glyph in font:
 # Output data
 with open(args.csv, 'w', newline='') as glyph_data_file:
     glyph_data = csv.writer(glyph_data_file, lineterminator = '\n')
-    glyph_data.writerow(headers)
+    row = make_row(headers[0], headers[1], headers[2], headers[3], args.uni)
+    glyph_data.writerow(row)
     sort_count = 0
 
     for first_glyphs in otspec:
-        row = (first_glyphs, first_glyphs, sort_count, '')
+        row = make_row(first_glyphs, first_glyphs, sort_count, '', args.uni)
         glyph_data.writerow(row)
         sort_count += 1
 
     most_glyphs.sort(key=attrgetter('sort_unicode', 'new_name'))
     for gd in most_glyphs:
-        row = (gd.name, gd.new_name, sort_count, gd.usv)
+        row = make_row(gd.name, gd.new_name, sort_count, gd.usv, args.uni)
         glyph_data.writerow(row)
         sort_count += 1

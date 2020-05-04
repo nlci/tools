@@ -17,7 +17,6 @@ popd
 # Convert SFD to UFO
 pushd ${src}
 rm -rf *.ufo
-rm -f *.log
 for sfd in *-???*.sfd
 do
     echo $sfd
@@ -47,7 +46,6 @@ do
 done
 
 # Add many Latin glyphs to the UFOs
-rm -f ${src}/copyglyphs-*
 rm -rf ${src}/copyglyphs
 mkdir ${src}/copyglyphs
 export PYTHONPATH=${nlci}

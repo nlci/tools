@@ -9,6 +9,12 @@ font = OpenFont(ufo)
 
 # Query UFO
 
+## Check if the first three glyphs exist
+otspec = ('.notdef', '.null', 'nonmarkingreturn')
+for first_glyphs in otspec:
+    if first_glyphs not in font:
+        print(f'glyph {first_glyphs} is not in the font')
+
 ## Find glyphs with encoding issues
 cmap = dict()
 for glyph in font:
