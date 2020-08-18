@@ -10,7 +10,7 @@ from wscript import *
 charis = '../../../latn/fonts/charis/source/CharisSIL'
 gentium = '../../../latn/fonts/gentium_local/instances/GentiumBookPlus'
 sourcesans = '../../../latn/fonts/source/SourceSansPro'
-exo = '../../../latn/fonts/exo/sources/instances/Exo'
+exo = '../../../latn/fonts/exo/sources/instance_ufos/Exo'
 
 def modifyFile(scale, fontname, f, sn, lsn = ''):
     # File locations

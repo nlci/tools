@@ -66,6 +66,13 @@ do
         # Restore needed anchors
         $HOME/script/tools/anchor-keep.py only $ufo
 
+        # fix issues found by Font Bakery
+        ${nlci}/fbfix.py $ufo
+
+        # Remove color from glyphs,
+        # generally only glyphs imported from other fonts will have colors
+        psfremovegliflibkeys $ufo public.markColor
+
         echo "setting family ${f} and style ${s} in UFO ${ufo}"
         psfsetkeys -p backup=0 -k familyName                         -v "${f}" $ufo
         psfsetkeys -p backup=0 -k openTypeNamePreferredFamilyName    -v "${f}" $ufo
@@ -86,6 +93,12 @@ do
             psfsetkeys -p backup=0 -k "com.schriftgestaltung.weightValue" -v "700" --plist lib $ufo
         else
             psfsetkeys -p backup=0 -k "com.schriftgestaltung.weightValue" -v "400" --plist lib $ufo
+        fi
+
+        if [ "$s" = "Italic" -o "$s" = "Bold Italic" ]
+        then
+            echo "fixing italicAngle in UFO ${ufo}"
+            psfsetkeys -p backup=0 -k "italicAngle" -v "-12" $ufo
         fi
 
         echo "importing glyphs in UFO ${ufo}"
