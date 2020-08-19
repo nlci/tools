@@ -6,13 +6,15 @@ import sys
 
 from wscript import *
 
-# Latin
+# Latin (and others)
 charis = '../../../latn/fonts/charis/source/CharisSIL'
 gentium = '../../../latn/fonts/gentium_local/instances/GentiumBookPlus'
 sourcesans = '../../../latn/fonts/source/SourceSansPro'
 exo = '../../../latn/fonts/exo/sources/instance_ufos/Exo'
+runic = '../../../../builds/noto-source/src/NotoSansRunic/NotoSansRunic'
 
-def modifyFile(scale, fontname, f, sn, lsn = ''):
+
+def modifyFile(scale, fontname, f, sn, lsn = '', chars = 'main_import.txt'):
     # File locations
     src = sys.argv[1]
     nlci = sys.argv[2]
@@ -34,7 +36,7 @@ def modifyFile(scale, fontname, f, sn, lsn = ''):
     # List of glyphs to copy
     glyphs = os.path.join(src, 'copyglyphs', f'{fontname}-{lsn}-{f}-{sn}.txt')
 
-    cmd = f'psfgetglyphnames -a {aglfn} -i cs/main_import.txt {latin} {glyphs}'
+    cmd = f'psfgetglyphnames -a {aglfn} -i cs/{chars} {latin} {glyphs}'
     print(cmd)
     os.system(cmd)
 
