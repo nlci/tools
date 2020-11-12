@@ -1,6 +1,4 @@
-com.schriftgestaltung.disablesAutomaticAlignment,true
 com.schriftgestaltung.customParameter.GSFont.disablesLastChange,true
-com.schriftgestaltung.disablesLastChange,true
 com.schriftgestaltung.customParameter.GSFont.useNiceNames,0
 com.schriftgestaltung.width,Regular
 com.schriftgestaltung.widthValue,100
