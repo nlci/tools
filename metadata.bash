@@ -67,7 +67,7 @@ do
         $HOME/script/tools/anchor-keep.py only $ufo
 
         # fix issues found by Font Bakery
-        ${nlci}/fbfix.py $ufo
+        ${nlci}/fix-nbsp.py $ufo
 
         # Remove color from glyphs,
         # generally only glyphs imported from other fonts will have colors
