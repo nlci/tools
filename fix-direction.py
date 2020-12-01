@@ -7,11 +7,13 @@ import sys
 ufo = sys.argv[1]
 font = OpenFont(ufo)
 
+glyph_name = sys.argv[2]
+
 # Modify UFO
 
 ## ensure curves are in the correct direction
-for glyph in font:
-    glyph.correctDirection()
+glyph = font[glyph_name]
+glyph.correctDirection()
 
 # Save UFO
 font.changed()
