@@ -26,18 +26,15 @@ def format_codepoint(codepoint):
 
 def is_bmp(codepoint):
     """Determine if a codepoint (interger) is in the BMP"""
-
-    if codepoint > 0xffff:
-        return False
-    return True
+    return codepoint <= 0xffff
 
 
 def make_row(glyph_name, ps_name, sort_final, usv, keep_name):
     """Return arguments, omitting ps_name if no renaming needs to be done"""
-    if keep_name:
-        return (glyph_name, sort_final, usv)
-    else:
-        return (glyph_name, ps_name, sort_final, usv)
+    row = [glyph_name, sort_final, usv]
+    if not keep_name:
+        row.insert(1, ps_name)
+    return row
 
 
 # Command line arguments
@@ -174,7 +171,7 @@ for glyph in font:
 
 # Output data
 with open(args.csv, 'w', newline='') as glyph_data_file:
-    glyph_data = csv.writer(glyph_data_file, lineterminator = '\n')
+    glyph_data = csv.writer(glyph_data_file, lineterminator='\n')
     row = make_row(headers[0], headers[1], headers[2], headers[3], args.uni)
     glyph_data.writerow(row)
     sort_count = 0
