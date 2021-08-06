@@ -84,6 +84,7 @@ headers = ('glyph_name', 'ps_name', 'sort_final', 'USV')
 otspec = ('.notdef', '.null', 'nonmarkingreturn')
 
 most_glyphs = list()
+new_names = set()
 for glyph in font:
     # Don't output again the first three specially named glyphs
     if glyph.name in otspec:
@@ -133,11 +134,10 @@ for glyph in font:
 
     if ligature_name in aglfn:
         # Keep glyph names listed in or based on the AGLFN unchanged
-        if not glyph.unicode:
-            codepoints.append(sys.maxunicode)
+        pass
     elif len(codepoints) == 0:
         # Some glyphs are not associated with a codepoint so we sort them at the end
-        codepoints.append(sys.maxunicode)
+        pass
     else:
         # Determine the needed format of glyph names.
         max_codepoint = max(codepoints)
@@ -160,13 +160,21 @@ for glyph in font:
     # or the codepoint of the character if not a ligature,
     # or by alphabetical order if there is no codepoint
     # associated with the glyph.
-    sort_unicode = codepoints[0]
+    sort_unicode = sys.maxunicode
+    if len(codepoints) > 0:
+        sort_unicode = codepoints[0]
     if glyph.unicode:
         sort_unicode = glyph.unicode
 
     # Record glyph data for later sorting.
     gd = GlyphData(glyph.name, new_name, usv, sort_unicode)
     most_glyphs.append(gd)
+
+    # Check to see if new names are unique
+    if not args.uni:
+        if new_name in new_names:
+            print(f'New name {new_name} in glyph {glyph.name} is already used')
+        new_names.add(new_name)
 
 
 # Output data
@@ -181,7 +189,7 @@ with open(args.csv, 'w', newline='') as glyph_data_file:
         glyph_data.writerow(row)
         sort_count += 1
 
-    most_glyphs.sort(key=attrgetter('sort_unicode', 'new_name'))
+    most_glyphs.sort(key=attrgetter('sort_unicode', 'new_name', 'name'))
     for gd in most_glyphs:
         row = make_row(gd.name, gd.new_name, sort_count, gd.usv, args.uni)
         glyph_data.writerow(row)
