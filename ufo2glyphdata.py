@@ -9,10 +9,12 @@ import argparse
 
 class GlyphData(object):
 
-    def __init__(self, name, new_name, usv, sort_unicode):
+    def __init__(self, name, new_name, usv, languages, features, sort_unicode):
         self.name = name
         self.new_name = new_name
         self.usv = usv
+        self.languages = languages
+        self.features = features
         self.sort_unicode = sort_unicode
 
 
@@ -29,9 +31,10 @@ def is_bmp(codepoint):
     return codepoint <= 0xffff
 
 
-def make_row(glyph_name, ps_name, sort_final, usv, keep_name):
+def make_row(glyph_name, ps_name, sort_final, usv, tag, feat, keep_name):
     """Return arguments, omitting ps_name if no renaming needs to be done"""
-    row = [glyph_name, sort_final, usv]
+    row = [glyph_name, sort_final, usv, tag, feat]
+    # row = [glyph_name, sort_final, usv]
     if not keep_name:
         row.insert(1, ps_name)
     return row
@@ -42,6 +45,8 @@ parser = argparse.ArgumentParser(description='Generate glyph_data.csv from UFO')
 parser.add_argument('-u', '--uni', help='Do not rename glyphs. This assumes glyphs are already AGLFN or start with u or uni', action='store_true')
 parser.add_argument('-s', '--script', help='GlyphsApp script extension to strip from glyph names')
 parser.add_argument('-v', '--virama', help='Codepoint (hex) of virama to use when the inherent vowel was killed')
+parser.add_argument('-l', '--langs', help='File containing which languages affect which glyphs')
+parser.add_argument('-f', '--features', help='File containing which features affect which glyphs')
 parser.add_argument('aglfn', help='Adobe Glyph List For New Fonts')
 parser.add_argument('ufo', help='UFO to read')
 parser.add_argument('csv', help='CSV file to output', nargs='?', default='glyph_data.csv')
@@ -51,6 +56,26 @@ args = parser.parse_args()
 script_id = ''
 if args.script:
     script_id = '-' + args.script
+
+# Load list of languages (if needed)
+languages = dict()
+if args.langs:
+    with open(args.langs, 'r', newline='') as language_file:
+        reader = csv.reader(language_file)
+        for line in reader:
+            glyph_name = line[0]
+            language = line[1].replace(' ', ',')
+            languages[glyph_name] = language
+
+# Load list of user features (if needed)
+features = dict()
+if args.features:
+    with open(args.features, 'r', newline='') as feature_file:
+        reader = csv.reader(feature_file)
+        for line in reader:
+            glyph_name = line[0]
+            feature = line[1].replace(' ', ',')
+            features[glyph_name] = feature
 
 # Load Adobe Glyph List For New Fonts (AGLFN)
 aglfn = list()
@@ -80,7 +105,7 @@ for glyph in font:
         cmap[glyph_name] = glyph.unicode
 
 # Create glyph data CSV file
-headers = ('glyph_name', 'ps_name', 'sort_final', 'USV')
+headers = ('glyph_name', 'ps_name', 'sort_final', 'USV', 'bcp47tags', 'Feat')
 otspec = ('.notdef', '.null', 'nonmarkingreturn')
 
 most_glyphs = list()
@@ -93,7 +118,6 @@ for glyph in font:
     # Output the data for the rest of the glyphs
     glyph_name = glyph.name
     new_name = glyph_name
-    usv = format_codepoint(glyph.unicode)
 
     # Split off the suffix (the text after after the full stop)
     # and the script ID, if either (or both) exist.
@@ -155,6 +179,12 @@ for glyph in font:
         new_ligature_name = sep.join(new_ligature_name_parts)
         new_name = ligature_prefix + new_ligature_name + dot_name + suffix_name
 
+    usv = ''
+    if suffix_name == '':
+        usvs = [format_codepoint(codepoint) for codepoint in codepoints]
+        usv = ' '.join(usvs)
+    # usv = format_codepoint(glyph.unicode)
+
     # Sorting is determined based on the codepoint
     # associated with the first part of a ligature,
     # or the codepoint of the character if not a ligature,
@@ -166,8 +196,12 @@ for glyph in font:
     if glyph.unicode:
         sort_unicode = glyph.unicode
 
+    # Retrieve optional language and features information
+    glyph_languages = languages.get(glyph.name, '')
+    glyph_features = features.get(glyph.name, '')
+
     # Record glyph data for later sorting.
-    gd = GlyphData(glyph.name, new_name, usv, sort_unicode)
+    gd = GlyphData(glyph.name, new_name, usv, glyph_languages, glyph_features, sort_unicode)
     most_glyphs.append(gd)
 
     # Check to see if new names are unique
@@ -180,17 +214,17 @@ for glyph in font:
 # Output data
 with open(args.csv, 'w', newline='') as glyph_data_file:
     glyph_data = csv.writer(glyph_data_file, lineterminator='\n')
-    row = make_row(headers[0], headers[1], headers[2], headers[3], args.uni)
+    row = make_row(headers[0], headers[1], headers[2], headers[3], headers[4], headers[5], args.uni)
     glyph_data.writerow(row)
     sort_count = 0
 
     for first_glyphs in otspec:
-        row = make_row(first_glyphs, first_glyphs, sort_count, '', args.uni)
+        row = make_row(first_glyphs, first_glyphs, sort_count, '', '', '',  args.uni)
         glyph_data.writerow(row)
         sort_count += 1
 
     most_glyphs.sort(key=attrgetter('sort_unicode', 'new_name', 'name'))
     for gd in most_glyphs:
-        row = make_row(gd.name, gd.new_name, sort_count, gd.usv, args.uni)
+        row = make_row(gd.name, gd.new_name, sort_count, gd.usv, gd.languages, gd.features, args.uni)
         glyph_data.writerow(row)
         sort_count += 1
