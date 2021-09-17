@@ -31,13 +31,29 @@ def is_bmp(codepoint):
     return codepoint <= 0xffff
 
 
-def make_row(glyph_name, ps_name, sort_final, usv, tag, feat, keep_name):
+def make_row(glyph_name, ps_name, sort_final, usv, tag, feat, args):
     """Return arguments, omitting ps_name if no renaming needs to be done"""
-    row = [glyph_name, sort_final, usv, tag, feat]
-    # row = [glyph_name, sort_final, usv]
-    if not keep_name:
+    row = [glyph_name, sort_final, usv]
+    if not args.uni:
         row.insert(1, ps_name)
+    if args.langs:
+        row.append(tag)
+    if args.feats:
+        row.append(feat)
     return row
+
+
+def tune_information(filename):
+    """Read information for tuning a font (language or features)"""
+    tunes = dict()
+    if filename:
+        with open(filename, 'r', newline='') as tune_file:
+            reader = csv.reader(tune_file)
+            for line in reader:
+                glyph_name = line[0]
+                tune = line[1].replace(' ', ',')
+                tunes[glyph_name] = tune
+    return tunes
 
 
 # Command line arguments
@@ -46,7 +62,7 @@ parser.add_argument('-u', '--uni', help='Do not rename glyphs. This assumes glyp
 parser.add_argument('-s', '--script', help='GlyphsApp script extension to strip from glyph names')
 parser.add_argument('-v', '--virama', help='Codepoint (hex) of virama to use when the inherent vowel was killed')
 parser.add_argument('-l', '--langs', help='File containing which languages affect which glyphs')
-parser.add_argument('-f', '--features', help='File containing which features affect which glyphs')
+parser.add_argument('-f', '--feats', help='File containing which features affect which glyphs')
 parser.add_argument('aglfn', help='Adobe Glyph List For New Fonts')
 parser.add_argument('ufo', help='UFO to read')
 parser.add_argument('csv', help='CSV file to output', nargs='?', default='glyph_data.csv')
@@ -57,25 +73,9 @@ script_id = ''
 if args.script:
     script_id = '-' + args.script
 
-# Load list of languages (if needed)
-languages = dict()
-if args.langs:
-    with open(args.langs, 'r', newline='') as language_file:
-        reader = csv.reader(language_file)
-        for line in reader:
-            glyph_name = line[0]
-            language = line[1].replace(' ', ',')
-            languages[glyph_name] = language
-
-# Load list of user features (if needed)
-features = dict()
-if args.features:
-    with open(args.features, 'r', newline='') as feature_file:
-        reader = csv.reader(feature_file)
-        for line in reader:
-            glyph_name = line[0]
-            feature = line[1].replace(' ', ',')
-            features[glyph_name] = feature
+# Load information for tuning a font (based on language or features)
+languages = tune_information(args.langs)
+features = tune_information(args.feats)
 
 # Load Adobe Glyph List For New Fonts (AGLFN)
 aglfn = list()
@@ -214,17 +214,17 @@ for glyph in font:
 # Output data
 with open(args.csv, 'w', newline='') as glyph_data_file:
     glyph_data = csv.writer(glyph_data_file, lineterminator='\n')
-    row = make_row(headers[0], headers[1], headers[2], headers[3], headers[4], headers[5], args.uni)
+    row = make_row(headers[0], headers[1], headers[2], headers[3], headers[4], headers[5], args)
     glyph_data.writerow(row)
     sort_count = 0
 
     for first_glyphs in otspec:
-        row = make_row(first_glyphs, first_glyphs, sort_count, '', '', '',  args.uni)
+        row = make_row(first_glyphs, first_glyphs, sort_count, '', '', '',  args)
         glyph_data.writerow(row)
         sort_count += 1
 
     most_glyphs.sort(key=attrgetter('sort_unicode', 'new_name', 'name'))
     for gd in most_glyphs:
-        row = make_row(gd.name, gd.new_name, sort_count, gd.usv, gd.languages, gd.features, args.uni)
+        row = make_row(gd.name, gd.new_name, sort_count, gd.usv, gd.languages, gd.features, args)
         glyph_data.writerow(row)
         sort_count += 1

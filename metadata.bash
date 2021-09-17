@@ -113,7 +113,16 @@ do
         if [ "$s" = "Regular" ]
         then
             echo "listing glyphs in UFO ${ufo}"
-            ${nlci}/ufo2glyphdata.py $HOME/pub/doc/Adobe/agl-aglfn/aglfn.txt $ufo glyph_data-${f}.csv
+            options=""
+            if [ -f languages.csv ]
+            then
+                options="$options --langs languages.csv"
+            fi
+            if [ -f features.csv ]
+            then
+                options="$options --feats features.csv"
+            fi
+            ${nlci}/ufo2glyphdata.py $options $HOME/pub/doc/Adobe/agl-aglfn/aglfn.txt $ufo glyph_data-${f}.csv
         fi
     done
 done
