@@ -31,6 +31,7 @@ for ufo in ${src}/*.ufo
 do
     echo "setting metrics in UFO ${ufo}"
     psfnormalize -p backup=0 -v 3 -p checkfix=none $ufo
+    ${nlci}/reverse-fix-direction.py $ufo init
     ./tools/encoding.py $ufo
     ${nlci}/heights.py $ufo
     ${nlci}/line_spacing.py $ufo
@@ -67,7 +68,7 @@ do
         $HOME/script/tools/anchor-keep.py only $ufo
 
         # fix issues found by Font Bakery
-        ${nlci}/fix-nbsp.py $ufo
+        ${nlci}/fix-spaces.py $ufo
 
         # Remove color from glyphs,
         # generally only glyphs imported from other fonts will have colors
