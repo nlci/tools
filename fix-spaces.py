@@ -7,43 +7,47 @@ import sys
 ufo = sys.argv[1]
 font = OpenFont(ufo)
 
+# Some fonts have been used for publishing
+# so the spaces in them should not be modified
+if font.info.familyName == 'ThiruValluvar':
+    sys.exit()
+
 # Modify UFO
 
 # Find the needed space glyphs
 for glyph in font:
-    if glyph.unicode:
-        if glyph.unicode == 0x0020:
-            space = glyph
-        if glyph.unicode == 0x002E:
-            period = glyph
-        if glyph.unicode == 0x0030:
-            zero = glyph
-        if glyph.unicode == 0x00A0:
-            nbspace = glyph
-        if glyph.unicode == 0x2007:
-            figurespace = glyph
-        if glyph.unicode == 0x2008:
-            punctuationspace = glyph
-        if glyph.unicode == 0x2003:
-            emspace = glyph
-        if glyph.unicode == 0x2002:
-            enspace = glyph
-        if glyph.unicode == 0x2000:
-            enquad = glyph
-        if glyph.unicode == 0x2001:
-            emquad = glyph
-        if glyph.unicode == 0x2004:
-            threeperemspace = glyph
-        if glyph.unicode == 0x2005:
-            fourperemspace = glyph
-        if glyph.unicode == 0x2006:
-            sixperemspace = glyph
-        if glyph.unicode == 0x2009:
-            thinspace = glyph
-        if glyph.unicode == 0x200A:
-            hairspace = glyph
-        if glyph.unicode == 0x202F:
-            nnbspace = glyph
+    if glyph.unicode == 0x0020:
+        space = glyph
+    if glyph.unicode == 0x002E:
+        period = glyph
+    if glyph.unicode == 0x0030:
+        zero = glyph
+    if glyph.unicode == 0x00A0:
+        nbspace = glyph
+    if glyph.unicode == 0x2007:
+        figurespace = glyph
+    if glyph.unicode == 0x2008:
+        punctuationspace = glyph
+    if glyph.unicode == 0x2003:
+        emspace = glyph
+    if glyph.unicode == 0x2002:
+        enspace = glyph
+    if glyph.unicode == 0x2000:
+        enquad = glyph
+    if glyph.unicode == 0x2001:
+        emquad = glyph
+    if glyph.unicode == 0x2004:
+        threeperemspace = glyph
+    if glyph.unicode == 0x2005:
+        fourperemspace = glyph
+    if glyph.unicode == 0x2006:
+        sixperemspace = glyph
+    if glyph.unicode == 0x2009:
+        thinspace = glyph
+    if glyph.unicode == 0x200A:
+        hairspace = glyph
+    if glyph.unicode == 0x202F:
+        nnbspace = glyph
 
 # Set width of spaces correctly
 nbspace.width = space.width
