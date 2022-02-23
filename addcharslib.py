@@ -29,7 +29,7 @@ def modifyFile(scale, fontname, f, sn, lsn = '', chars = 'main_import.txt'):
         lsn = sn
 
     # Input data
-    aglfn = os.path.join(nlci, 'aglfn-nr.csv')
+    aglfn = os.path.join(nlci, 'glyph_names.csv')
     fontpath = eval(fontname)
     latin = f'{fontpath}-{lsn}.ufo'
 
