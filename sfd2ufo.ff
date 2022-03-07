@@ -1,2 +1,4 @@
 Open($1)
+SelectAll()
+Simplify()
 Generate($2)
