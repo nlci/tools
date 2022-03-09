@@ -104,8 +104,11 @@ do
 
         echo "importing glyphs in UFO ${ufo}"
         ../tools/import.bash "${f}" "${s/ /}" $ufo
-        # echo "fixing glyphs in UFO ${ufo}"
-        # ../tools/cleanup.py $ufo
+        if [ -x ../tools/cleanup.py ]
+        then
+            echo "fixing glyphs in UFO ${ufo}"
+            ../tools/cleanup.py $ufo
+        fi
         if [ -f composites.txt ]
         then
             echo "building composites in UFO ${ufo}"
