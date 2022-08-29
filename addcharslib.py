@@ -8,25 +8,25 @@ from wscript import *
 
 # Latin (and others)
 charis = '../../../latn/fonts/charis/source/CharisSIL'
-gentium = '../../../latn/fonts/gentium_local/instances/GentiumBookPlus'
+gentium = '../../../latn/fonts/gentium_local/instances/Gentium'
 sourcesans = '../../../latn/fonts/source/SourceSansPro'
 exo = '../../../latn/fonts/exo/sources/instance_ufos/Exo'
 runic = '../../../../builds/noto-source/src/NotoSansRunic/NotoSansRunic'
 
 
-def modifyFile(scale, fontname, f, sn, lsn = '', chars = 'main_import.txt'):
+def modifyFile(scale, fontname, f, sn, styles={}, chars='main_import.txt'):
     # File locations
     src = sys.argv[1]
     nlci = sys.argv[2]
+
+    # Latin style to use
+    lsn = styles.get(sn, sn)
+    lsn = lsn.replace(' ', '')
 
     # UFO to modify
     sn = sn.replace(' ', '')
     ufo = f + '-' + sn + '.ufo'
     ufo = os.path.join(src, ufo)
-
-    # Unique Latin style
-    if lsn == '':
-        lsn = sn
 
     # Input data
     aglfn = os.path.join(nlci, 'glyph_names.csv')
