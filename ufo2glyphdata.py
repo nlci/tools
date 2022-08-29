@@ -107,6 +107,8 @@ for glyph in font:
         glyph_name = glyph.name
         cmap[glyph_name] = glyph.unicode
 
+skip_export = font.lib.get('public.skipExportGlyphs', [])
+
 # Create glyph data CSV file
 headers = ('glyph_name', 'ps_name', 'sort_final', 'USV', 'bcp47tags', 'Feat')
 otspec = ('.notdef', '.null', 'nonmarkingreturn')
@@ -116,6 +118,10 @@ new_names = set()
 for glyph in font:
     # Don't output again the first three specially named glyphs
     if glyph.name in otspec:
+        continue
+
+    # Ignore glyphs that are marked for not exporting into the final TTF
+    if glyph.name in skip_export:
         continue
 
     # Output the data for the rest of the glyphs
