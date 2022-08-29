@@ -24,11 +24,16 @@ do
     fontforge -script ${nlci}/sfd2ufo.ff $sfd ${fontfilename}.ufo3
     mv -v ${fontfilename}.ufo3 ${fontfilename}.ufo
 
-    # Work around https://github.com/fontforge/fontforge/issues/4951
+    # Set WOFF metadata in UFOs
+    # Also works around https://github.com/fontforge/fontforge/issues/4951
     fontinfo=${fontfilename}.ufo/fontinfo.plist
     head -n -3 ${fontinfo} > tmp.plist
     mv tmp.plist ${fontinfo}
-    cat ${nlci}/fontinfo.plist >> ${fontinfo}
+    cat ${nlci}/fontinfo1.plist >> ${fontinfo}
+    echo -n "<string>" >> ${fontinfo}
+    echo -n $(grep "Pan " ../FONTLOG.txt) >> ${fontinfo}
+    echo "</string>" >> ${fontinfo}
+    cat ${nlci}/fontinfo2.plist >> ${fontinfo}
 done
 popd
 
