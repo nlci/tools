@@ -185,7 +185,7 @@ for glyph in font:
     usv = ''
     if suffix_name == '':
         usvs = [format_codepoint(codepoint) for codepoint in codepoints]
-        usv = ' '.join(usvs)
+        usv = '_'.join(usvs)
     # usv = format_codepoint(glyph.unicode)
 
     # Some glyphs are not associated with a codepoint so sort them
