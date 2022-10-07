@@ -31,6 +31,7 @@ metrics = {
     # mlym
     'Vayalar': (-3, 596),
     'Malabar': (-2, 600),
+    'Bailey': (-1304, 1434),
 
     # orya
     'Asika': (-333, 804),
