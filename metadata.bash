@@ -58,6 +58,11 @@ do
 done
 
 # Add many Latin glyphs to the UFOs
+pushd cs
+cat main_import.txt cp1252_nf?.txt > all_import.txt
+cat main_import.txt cp1252_nfc.txt > nfc_import.txt
+cat main_import.txt cp1252_nfd.txt > nfd_import.txt
+popd
 rm -rf ${src}/copyglyphs
 mkdir ${src}/copyglyphs
 export PYTHONPATH=${nlci}
@@ -77,6 +82,9 @@ do
 
         # Restore needed anchors
         $HOME/script/tools/anchor-keep.py only $ufo
+
+        # Swap Latin and Indic specific punctuation (and digits)
+        ${nlci}/indic_punct.py $ufo
 
         # fix issues found by Font Bakery
         ${nlci}/fix-spaces.py $ufo
@@ -115,15 +123,20 @@ do
 
         echo "importing glyphs in UFO ${ufo}"
         ../tools/import.bash "${f}" "${s/ /}" $ufo
-        if [ -x ../tools/cleanup.py ]
+        if [ -f rename-${f}.csv ]
         then
-            echo "fixing glyphs in UFO ${ufo}"
-            ../tools/cleanup.py $ufo
+            echo "renaming glyphs in UFO ${ufo}"
+            psfrenameglyphs -i rename-${f}.csv $ufo
         fi
         if [ -f composites.txt ]
         then
             echo "building composites in UFO ${ufo}"
             psfbuildcomp -i composites.txt $ufo
+        fi
+        if [ -x ../tools/cleanup.py ]
+        then
+            echo "fixing glyphs in UFO ${ufo}"
+            ../tools/cleanup.py $ufo
         fi
         if [ "$s" = "Regular" ]
         then
