@@ -17,6 +17,12 @@ for glyph in font:
         elif mode == 'only':
             if anchor.name.endswith(k):
                 anchor.name = anchor.name.replace(k, '')
+            elif anchor.name in ('_U', '_H', '_top', '_bottom'):
+                # Latin combing diacritics
+                continue
+            elif anchor.name in ('U', 'H', 'top', 'bottom') and glyph.unicode is not None and glyph.unicode < 0x300:
+                # Latin base characters
+                continue
             else:
                 glyph.removeAnchor(anchor)
 

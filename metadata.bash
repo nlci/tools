@@ -55,6 +55,9 @@ do
 
     # Save needed anchors
     $HOME/script/tools/anchor-keep.py mark $ufo
+
+    # Use script specific dashes
+    psfbuildcompgc -i ${src}/composites.glyphConstruction $ufo
 done
 
 # Add many Latin glyphs to the UFOs
@@ -88,6 +91,7 @@ do
 
         # fix issues found by Font Bakery
         ${nlci}/fix-spaces.py $ufo
+        ${nlci}/fix-gdef.py $ufo
 
         # Remove color from glyphs,
         # generally only glyphs imported from other fonts will have colors
