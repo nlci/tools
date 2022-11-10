@@ -7,11 +7,6 @@ import sys
 ufo = sys.argv[1]
 font = OpenFont(ufo)
 
-# Some fonts have been used for publishing
-# so the spaces in them should not be modified
-if font.info.familyName == 'ThiruValluvar':
-    sys.exit()
-
 # Modify UFO
 
 # Find the needed space glyphs

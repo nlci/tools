@@ -56,7 +56,7 @@ do
     # Save needed anchors
     $HOME/script/tools/anchor-keep.py mark $ufo
 
-    # Use script specific dashes
+    echo "Use script specific dashes"
     psfbuildcompgc -i ${src}/composites.glyphConstruction $ufo
 done
 
@@ -137,6 +137,10 @@ do
             echo "building composites in UFO ${ufo}"
             psfbuildcomp -i composites.txt $ufo
         fi
+
+        # echo "polishing glyphs in UFO ${ufo}"
+        ${nlci}/polish.py $ufo
+
         if [ -x ../tools/cleanup.py ]
         then
             echo "fixing glyphs in UFO ${ufo}"
