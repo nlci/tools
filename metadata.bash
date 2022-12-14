@@ -54,7 +54,7 @@ do
     fi
 
     # Save needed anchors
-    $HOME/script/tools/anchor-keep.py mark $ufo
+    $HOME/script/tools/anchor-keep.py mark $nlci/anchors.json $ufo
 
     echo "Use script specific dashes"
     psfbuildcompgc -i ${src}/composites.glyphConstruction $ufo
@@ -84,7 +84,7 @@ do
         ufo=${f/ /}-${s/ /}.ufo # remove spaces in both face and style strings
 
         # Restore needed anchors
-        $HOME/script/tools/anchor-keep.py only $ufo
+        $HOME/script/tools/anchor-keep.py only $nlci/anchors.json $ufo
 
         # Swap Latin and Indic specific punctuation (and digits)
         ${nlci}/indic_punct.py $ufo
@@ -95,7 +95,7 @@ do
 
         # Remove color from glyphs,
         # generally only glyphs imported from other fonts will have colors
-        psfremovegliflibkeys $ufo public.markColor
+        psfsetmarkcolors -x $ufo
 
         echo "setting family ${f} and style ${s} in UFO ${ufo}"
         psfsetkeys -p backup=0 -k familyName                         -v "${f}" $ufo
@@ -119,12 +119,6 @@ do
             psfsetkeys -p backup=0 -k "com.schriftgestaltung.weightValue" -v "400" --plist lib $ufo
         fi
 
-        if [ "$s" = "Italic" -o "$s" = "Bold Italic" ]
-        then
-            echo "fixing italicAngle in UFO ${ufo}"
-            psfsetkeys -p backup=0 -k "italicAngle" -v "-12" $ufo
-        fi
-
         echo "importing glyphs in UFO ${ufo}"
         ../tools/import.bash "${f}" "${s/ /}" $ufo
         if [ -f rename-${f}.csv ]
@@ -135,7 +129,7 @@ do
         if [ -f composites.txt ]
         then
             echo "building composites in UFO ${ufo}"
-            psfbuildcomp -i composites.txt $ufo
+            psfbuildcomp -c -i composites.txt $ufo
         fi
 
         # echo "polishing glyphs in UFO ${ufo}"
@@ -145,6 +139,15 @@ do
         then
             echo "fixing glyphs in UFO ${ufo}"
             ../tools/cleanup.py $ufo
+        fi
+        if [ -x ../tools/anchors.bash ]
+        then
+            echo "Preparing to add (adjust) anchors in UFO ${ufo}"
+            ../tools/anchors.bash $ufo
+        fi
+        if [ -x ../tools/anchors.py ]
+        then
+            ../tools/anchors.py $ufo
         fi
         if [ "$s" = "Regular" ]
         then
@@ -158,7 +161,16 @@ do
             then
                 options="$options --feats features.csv"
             fi
-            ${nlci}/ufo2glyphdata.py $options $HOME/pub/doc/Adobe/agl-aglfn/aglfn.txt $ufo glyph_data-${f}.csv
+            ${nlci}/ufo2glyphdata.py $options $HOME/script/adobe/agl-aglfn/aglfn.txt $ufo glyph_data-${f}.csv
+        else
+            italic_option=""
+            if [ "$s" = "Italic" -o "$s" = "Bold Italic" ]
+            then
+                italic_option="-i"
+                echo "fixing italicAngle in UFO ${ufo}"
+                psfsetkeys -p backup=0 -k "italicAngle" -v "-12" $ufo
+            fi
+            ${nlci}/copyanchors.py $italic_option -l $nlci/anchors.json ${f}-Regular.ufo $ufo
         fi
     done
 done
@@ -168,4 +180,4 @@ popd
 echo "now running preflight"
 ./preflight
 echo "done running preflight"
-rm -rf ${src}/backups
+echo "done producing UFO sources"

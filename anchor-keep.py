@@ -1,15 +1,18 @@
 #!/usr/bin/python3
 
 from fontParts.world import *
+import json
 import sys
 
 # Open UFO
-ufo = sys.argv[2]
+ufo = sys.argv[3]
 font = OpenFont(ufo)
 
 # Modify UFO
 mode = sys.argv[1]
 k = 'keep'
+with open(sys.argv[2]) as latin_anchor_file:
+    latin_anchors = json.load(latin_anchor_file)
 for glyph in font:
     for anchor in glyph.anchors:
         if mode == 'mark':
@@ -17,10 +20,10 @@ for glyph in font:
         elif mode == 'only':
             if anchor.name.endswith(k):
                 anchor.name = anchor.name.replace(k, '')
-            elif anchor.name in ('_U', '_H', '_top', '_bottom'):
+            elif anchor.name in latin_anchors['mark']:
                 # Latin combing diacritics
                 continue
-            elif anchor.name in ('U', 'H', 'top', 'bottom') and glyph.unicode is not None and glyph.unicode < 0x300:
+            elif anchor.name in latin_anchors['base'] and glyph.unicode is not None and glyph.unicode < 0x300:
                 # Latin base characters
                 continue
             else:

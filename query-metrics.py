@@ -9,10 +9,13 @@ font = OpenFont(ufo)
 
 # Query UFO
 
-## Show anchor information
+## Show glyph extents
 for glyph in font:
-    for anchor in glyph.anchors:
-        print(f'glyph:{glyph.name} ap:{anchor.name} {anchor.x} {anchor.y}')
+    bounds = glyph.bounds
+    if bounds is None:
+        continue
+    (xmin, ymin, xmax, ymax) = bounds
+    print(f'glyph:{glyph.name} {ymin} {ymax}')
 
 # Modify UFO
 

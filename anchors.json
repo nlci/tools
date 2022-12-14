@@ -1,0 +1,14 @@
+{
+  "base": [
+    "U",
+    "H",
+    "top",
+    "bottom"
+  ],
+  "mark": [
+    "_U",
+    "_H",
+    "_top",
+    "_bottom"
+  ]
+}
