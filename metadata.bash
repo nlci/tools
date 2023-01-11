@@ -119,6 +119,12 @@ do
             psfsetkeys -p backup=0 -k "com.schriftgestaltung.weightValue" -v "400" --plist lib $ufo
         fi
 
+        if [ "$s" = "Italic" -o "$s" = "Bold Italic" ]
+        then
+            echo "fixing italicAngle in UFO ${ufo}"
+            psfsetkeys -p backup=0 -k "italicAngle" -v "-12" $ufo
+        fi
+
         echo "importing glyphs in UFO ${ufo}"
         ../tools/import.bash "${f}" "${s/ /}" $ufo
         if [ -f rename-${f}.csv ]
@@ -162,20 +168,14 @@ do
                 options="$options --feats features.csv"
             fi
             ${nlci}/ufo2glyphdata.py $options $HOME/script/adobe/agl-aglfn/aglfn.txt $ufo glyph_data-${f}.csv
-        else
-            italic_option=""
-            if [ "$s" = "Italic" -o "$s" = "Bold Italic" ]
-            then
-                italic_option="-i"
-                echo "fixing italicAngle in UFO ${ufo}"
-                psfsetkeys -p backup=0 -k "italicAngle" -v "-12" $ufo
-            fi
-            ${nlci}/copyanchors.py $italic_option -l $nlci/anchors.json ${f}-Regular.ufo $ufo
         fi
     done
 done
-
 popd
+if [ -x ./tools/syncanchors ]
+then
+    ./tools/syncanchors
+fi
 
 echo "now running preflight"
 ./preflight

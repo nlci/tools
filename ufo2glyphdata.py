@@ -143,6 +143,11 @@ for glyph in font:
         latin_script = False
         base_ligature_name = base_ligature_name.replace(script_id, '')
     for base_name in base_ligature_name.split('_'):
+        # Glyphs used only for building component glyphs generally start with _
+        # and will not have a codepoint and do not need to be processed here.
+        if base_name == '':
+            break
+
         found = False
         if args.virama:
             # Look for the name with the inherent vowel appended

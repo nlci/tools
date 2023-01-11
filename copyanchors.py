@@ -14,6 +14,8 @@ parser.add_argument('source', help='Source UFO')
 parser.add_argument('dest', help='Destination UFO')
 args = parser.parse_args()
 
+print(f'Copy anchors from {args.source} to {args.dest}')
+
 dest_font = Font.open(args.dest)
 italic_angle_degrees = dest_font.info.italicAngle
 if not italic_angle_degrees:
@@ -54,7 +56,10 @@ for source_glyph in source_font:
 
     # remove all the non-latin anchors in the destination font,
     # but first store the x location if needed
-    dest_glyph = dest_font[source_glyph.name]
+    try:
+        dest_glyph = dest_font[source_glyph.name]
+    except KeyError:
+        continue
     for dest_anchor in dest_glyph.anchors:
         if dest_anchor.name in latin_anchors:
             continue
@@ -62,7 +67,7 @@ for source_glyph in source_font:
             anchors[dest_anchor.name]['x'] = dest_anchor.x
         dest_glyph.removeAnchor(dest_anchor)
 
-    # determine if the glyph is a empty, a base glyph, above mark, or below mark
+    # determine if the glyph is empty, a base glyph, above mark, or below mark
     baseline = 0
     bounds = source_glyph.bounds
     if bounds is not None:
