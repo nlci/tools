@@ -15,7 +15,7 @@ for glyph in font:
     if bounds is None:
         continue
     (xmin, ymin, xmax, ymax) = bounds
-    print(f'glyph:{glyph.name} {ymin} {ymax}')
+    print(f'glyph:{glyph.name} ymin: {ymin:.0f} ymax: {ymax:.0f}')
 
 # Modify UFO
 
