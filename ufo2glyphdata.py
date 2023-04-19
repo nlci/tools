@@ -109,7 +109,7 @@ for glyph in font:
         glyph_name = glyph.name
         cmap[glyph_name] = glyph.unicode
 
-skip_export = font.lib.get('public.skipExportGlyphs', [])
+# skip_export = font.lib.get('public.skipExportGlyphs', [])
 
 # Create glyph data CSV file
 headers = ('glyph_name', 'ps_name', 'sort_final', 'sort_design', 'USV', 'bcp47tags', 'Feat')
@@ -125,8 +125,8 @@ for glyph in font:
         continue
 
     # Ignore glyphs that are marked for not exporting into the final TTF
-    if glyph.name in skip_export:
-        continue
+    # if glyph.name in skip_export:
+    #     continue
 
     # Output the data for the rest of the glyphs
     glyph_name = glyph.name
@@ -197,6 +197,9 @@ for glyph in font:
 
         new_name += dot_name + suffix_name
 
+    # Glyph names in a TTF file cannot have dashes in them
+    new_name = new_name.replace('-', '')
+
     usv = ''
     sort_tail = ''
     if suffix_name == '':
@@ -216,7 +219,7 @@ for glyph in font:
     if len(codepoints) > 0:
         sort_unicode = codepoints[0]
 
-    # For design, sort by the last codepoint (converted to a string) in a ligature 
+    # For design, sort by the last codepoint (converted to a string) in a ligature
     if len(codepoints) > 1:
         sort_tail = format_codepoint(codepoints[-1])
 
