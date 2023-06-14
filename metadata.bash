@@ -25,9 +25,9 @@ do
     mv -v ${fontfilename}.ufo3 ${fontfilename}.ufo
 
     # Set WOFF metadata in UFOs
-    # Also works around https://github.com/fontforge/fontforge/issues/4951
+    # Used to be also needed to work around https://github.com/fontforge/fontforge/issues/4951
     fontinfo=${fontfilename}.ufo/fontinfo.plist
-    head -n -3 ${fontinfo} > tmp.plist
+    head -n -2 ${fontinfo} > tmp.plist
     mv tmp.plist ${fontinfo}
     cat ${nlci}/fontinfo1.plist >> ${fontinfo}
     echo -n "<string>" >> ${fontinfo}
