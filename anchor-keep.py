@@ -23,7 +23,7 @@ for glyph in font:
             elif anchor.name in latin_anchors['mark']:
                 # Latin combing diacritics
                 continue
-            elif anchor.name in latin_anchors['base'] and glyph.unicode is not None and glyph.unicode < 0x300:
+            elif anchor.name in latin_anchors['base']: # and glyph.unicode is not None and glyph.unicode < 0x300:
                 # Latin base characters
                 continue
             else:

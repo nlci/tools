@@ -3,24 +3,21 @@
 from fontParts.world import *
 import sys
 
+def collect(filename):
+    font = OpenFont(filename)
+    inventory = set()
+    cmap = set()
+    for glyph in font:
+        inventory.add(glyph.name)
+        if glyph.unicode is not None:
+            cmap.add(glyph.unicode)
+    return font, inventory, cmap
+
 # Open UFOs
-ufo1 = sys.argv[1]
-font1 = OpenFont(ufo1)
-
-ufo2 = sys.argv[2]
-font2 = OpenFont(ufo2)
-
-# Query UFO
+font1, inventory1, cmap1 = collect(sys.argv[1])
+font2, inventory2, cmap2 = collect(sys.argv[2])
 
 ## Are the glyph inventories the same
-inventory1 = set()
-for glyph in font1:
-    inventory1.add(glyph.name)
-
-inventory2 = set()
-for glyph in font2:
-    inventory2.add(glyph.name)
-
 print('glyphs only in font 1')
 for glyph_name in sorted(inventory1 - inventory2):
     print(glyph_name)
@@ -28,6 +25,15 @@ for glyph_name in sorted(inventory1 - inventory2):
 print('glyphs only in font 2')
 for glyph_name in sorted(inventory2 - inventory1):
     print(glyph_name)
+
+## Are the codepoints the same
+print('codepoints only in font 1')
+for codepoint in sorted(cmap1 - cmap2):
+    print(f'{codepoint:04X}')
+
+print('codepoints only in font 2')
+for codepoint in sorted(cmap2 - cmap1):
+    print(f'{codepoint:04X}')
 
 ## Are glyphs compatible for interpolation
 for glyph_name in inventory1 & inventory2:

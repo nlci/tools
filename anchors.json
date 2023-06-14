@@ -3,12 +3,18 @@
     "U",
     "H",
     "top",
-    "bottom"
+    "bottom",
+    "aboveUC",
+    "aboveLC",
+    "baseLC"
   ],
   "mark": [
     "_U",
     "_H",
     "_top",
-    "_bottom"
+    "_bottom",
+    "_aboveUC",
+    "_aboveLC",
+    "_baseLC"
   ]
 }
