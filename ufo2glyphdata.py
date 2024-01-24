@@ -2,6 +2,7 @@
 
 from fontParts.world import *
 import fontTools.unicodedata
+import codecs
 import csv
 import sys
 from operator import attrgetter
@@ -10,12 +11,13 @@ import argparse
 
 class GlyphData(object):
 
-    def __init__(self, name, new_name, usv, languages, features, sort_unicode, sort_group, sort_tail = ''):
+    def __init__(self, name, new_name, usv, languages, features, sort_mac_roman, sort_unicode, sort_group, sort_tail = ''):
         self.name = name
         self.new_name = new_name
         self.usv = usv
         self.languages = languages
         self.features = features
+        self.sort_mac_roman = sort_mac_roman
         self.sort_unicode = sort_unicode
         self.sort_group = sort_group
         self.sort_tail = sort_tail
@@ -112,6 +114,21 @@ for glyph in font:
 
 # skip_export = font.lib.get('public.skipExportGlyphs', [])
 
+# MacRoman codepage
+modify_mac_roman = {
+    0x03A9: 0x2126,  # GREEK CAPITAL LETTER OMEGA -> OHM SIGN
+    0x20AC: 0x00A4,  # EURO SIGN -> CURRENCY SIGN
+    0xF8FF: 0x25CC,  # Apple logo -> DOTTED CIRCLE
+}
+
+mac_roman = dict()
+for i in range(256):
+    mac_codepoint = i.to_bytes(1, 'big')
+    mac_char = codecs.decode(mac_codepoint, encoding='mac_roman')
+    mac_usv = ord(mac_char)
+    mac_usv = modify_mac_roman.get(mac_usv, mac_usv)
+    mac_roman[mac_usv] = i
+
 # Create glyph data CSV file
 headers = ('glyph_name', 'ps_name', 'sort_final', 'sort_design', 'USV', 'bcp47tags', 'Feat')
 otspec = ('.notdef', '.null', 'nonmarkingreturn')
@@ -121,7 +138,7 @@ new_names = set()
 for glyph in font:
     # Handle the first three specially named glyphs
     if glyph.name in otspec:
-        gd = GlyphData(glyph.name, glyph.name, '', '', '', -1, 0)
+        gd = GlyphData(glyph.name, glyph.name, '', '', '', -1, -1, -1)
         glyphs.append(gd)
         continue
 
@@ -213,6 +230,7 @@ for glyph in font:
     # at the end, in alphabetical order.
     # This is the default if none of the conditions below matches.
     sort_unicode = sys.maxunicode
+    sort_group = 2
 
     # Sort by the codepoint associated with the first part of a ligature,
     # or the codepoint of the base name of the glyph if not a ligature
@@ -227,20 +245,26 @@ for glyph in font:
     # Sort by the codepoint of the character if not a ligature,
     # even if the name looks like it should be a ligature,
     # due to having an underscore in the glyph name.
+    # Unless character is the MacRoman codepage then the character
+    # should be in the first group of characters in the font.
+    sort_mac_roman = -1
     if glyph.unicode:
         sort_unicode = glyph.unicode
+        sort_group = 1
+        if sort_unicode in mac_roman:
+            sort_mac_roman = mac_roman[sort_unicode]
+            sort_group = 0
 
     # Retrieve optional language and features information
     glyph_languages = languages.get(glyph.name, '')
     glyph_features = features.get(glyph.name, '')
 
     # Group characters from main script at the end
-    sort_group = 0
     if args.script in fontTools.unicodedata.script_extension(sort_unicode):
-        sort_group = 1
+        sort_group = 3
 
     # Record glyph data for later sorting
-    gd = GlyphData(glyph.name, new_name, usv, glyph_languages, glyph_features, sort_unicode, sort_group, sort_tail)
+    gd = GlyphData(glyph.name, new_name, usv, glyph_languages, glyph_features, sort_mac_roman, sort_unicode, sort_group, sort_tail)
     glyphs.append(gd)
 
     # Check to see if new names are unique
@@ -256,13 +280,13 @@ with open(args.csv, 'w', newline='') as glyph_data_file:
     row = make_row(headers[0], headers[1], headers[2], headers[3], headers[4], headers[5], headers[6], args)
     glyph_data.writerow(row)
 
-    glyphs.sort(key=attrgetter('sort_group', 'sort_tail', 'sort_unicode', 'new_name', 'name'))
+    glyphs.sort(key=attrgetter('sort_tail', 'sort_unicode', 'new_name', 'name'))
     sort_count = 0
     for gd in glyphs:
         gd.design = sort_count
         sort_count += 1
 
-    glyphs.sort(key=attrgetter('sort_group', 'sort_unicode', 'new_name', 'name'))
+    glyphs.sort(key=attrgetter('sort_group', 'sort_mac_roman', 'sort_unicode', 'new_name', 'name'))
     sort_count = 0
     for gd in glyphs:
         row = make_row(gd.name, gd.new_name, sort_count, gd.design, gd.usv, gd.languages, gd.features, args)
