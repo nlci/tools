@@ -24,6 +24,11 @@ class GlyphData(object):
         self.design = -1
 
 
+def effective_glyph_name(glyph_name):
+    """Create a temporary name to handle fullwidth CJK variants of ASCII characters"""
+    return glyph_name.replace('.full', 'full')
+
+
 def format_codepoint(codepoint):
     """Format a codepoint (integer) to a USV (at least 4 hex digits)"""
     usv = ''
@@ -109,7 +114,7 @@ font = OpenFont(args.ufo)
 cmap = dict()
 for glyph in font:
     if glyph.unicode:
-        glyph_name = glyph.name
+        glyph_name = effective_glyph_name(glyph.name)
         cmap[glyph_name] = glyph.unicode
 
 # skip_export = font.lib.get('public.skipExportGlyphs', [])
@@ -147,7 +152,7 @@ for glyph in font:
     #     continue
 
     # Output the data for the rest of the glyphs
-    glyph_name = glyph.name
+    glyph_name = effective_glyph_name(glyph.name)
     new_name = glyph_name
 
     # Split off the suffix (the text after after the full stop)
