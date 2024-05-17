@@ -7,7 +7,7 @@ import sys
 from wscript import *
 
 # Latin (and others)
-charis = '../../../latn/fonts/charis/source/CharisSIL'
+charis = '../../../latn/fonts/charis/source/masters/CharisSIL'
 gentium = '../../../latn/fonts/gentium_local/instances/Gentium'
 andika = '../../../latn/fonts/andika/source/Andika'
 sourcesans = '../../../latn/fonts/source/SourceSansPro'
@@ -19,6 +19,7 @@ def modifyFile(scale, fontname, f, sn, styles={}, chars='all_import.txt'):
     # File locations
     src = sys.argv[1]
     nlci = sys.argv[2]
+    cs = sys.argv[3]
 
     # Latin style to use
     lsn = styles.get(sn, sn)
@@ -37,7 +38,7 @@ def modifyFile(scale, fontname, f, sn, styles={}, chars='all_import.txt'):
     # List of glyphs to copy
     glyphs = os.path.join(src, 'copyglyphs', f'{fontname}-{lsn}-{f}-{sn}.txt')
 
-    cmd = f'psfgetglyphnames -a {aglfn} -i cs/{chars} {latin} {glyphs}'
+    cmd = f'psfgetglyphnames -a {aglfn} -i {cs}/{chars} {latin} {glyphs}'
     print(cmd)
     os.system(cmd)
 

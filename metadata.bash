@@ -2,6 +2,7 @@
 
 export orya="../../../../orya/fonts/asika/source"
 export deva="../../../../deva/fonts/panini/source"
+export knda="../../../../knda/fonts/badami/source"
 export taml="../../../../taml/fonts/thiruvalluvar/source"
 
 # Convert to friendly working glyph names
@@ -61,15 +62,16 @@ do
 done
 
 # Add many Latin glyphs to the UFOs
-pushd cs
+pushd ${cs}
 cat main_import.txt cp1252_nf?.txt > all_import.txt
 cat main_import.txt cp1252_nfc.txt > nfc_import.txt
 cat main_import.txt cp1252_nfd.txt > nfd_import.txt
 popd
+cat $HOME/script/smithplus/etc/glyph_names/glyph_names.csv ${nlci}/glyphsapp_override.csv > ${nlci}/glyph_names.csv
 rm -rf ${src}/copyglyphs
 mkdir ${src}/copyglyphs
 export PYTHONPATH=${nlci}
-./addchars.py ${src} ${nlci}
+./addchars.py ${src} ${nlci} ${cs}
 
 # Further modifications to the UFOs using face and style names
 pushd ${src}
@@ -135,7 +137,7 @@ do
         if [ -f composites.txt ]
         then
             echo "building composites in UFO ${ufo}"
-            psfbuildcomp -c -i composites.txt $ufo
+            psfbuildcomp -c -f -i composites.txt $ufo
         fi
 
         # echo "polishing glyphs in UFO ${ufo}"
