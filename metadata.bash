@@ -5,6 +5,11 @@ export deva="../../../../deva/fonts/panini/source"
 export knda="../../../../knda/fonts/badami/source"
 export taml="../../../../taml/fonts/thiruvalluvar/source"
 
+locl=${PWD/ci\//}-local
+dev=$locl/dev
+rc=$dev/smithrc
+source $rc
+
 # Convert to friendly working glyph names
 pushd ${src}
 for sfd in *-???*.sfd
@@ -63,9 +68,9 @@ done
 
 # Add many Latin glyphs to the UFOs
 pushd ${cs}
-cat main_import.txt cp1252_nf?.txt > all_import.txt
-cat main_import.txt cp1252_nfc.txt > nfc_import.txt
-cat main_import.txt cp1252_nfd.txt > nfd_import.txt
+cat main_import.txt nlci-latin.txt cp1252_nf?.txt > all_import.txt
+cat main_import.txt nlci-latin.txt cp1252_nfc.txt > nfc_import.txt
+cat main_import.txt nlci-latin.txt cp1252_nfd.txt > nfd_import.txt
 popd
 cat $HOME/script/smithplus/etc/glyph_names/glyph_names.csv ${nlci}/glyphsapp_override.csv > ${nlci}/glyph_names.csv
 rm -rf ${src}/copyglyphs
@@ -88,16 +93,15 @@ do
         # Restore needed anchors
         $HOME/script/tools/anchor-keep.py only $nlci/anchors.json $ufo
 
+        # Remove dangling composites
+        composites -c $ufo
+
         # Swap Latin and Indic specific punctuation (and digits)
         ${nlci}/indic_punct.py $ufo
 
         # fix issues found by Font Bakery
         ${nlci}/fix-spaces.py $ufo
         ${nlci}/fix-gdef.py $ufo
-
-        # Remove color from glyphs,
-        # generally only glyphs imported from other fonts will have colors
-        psfsetmarkcolors -x $ufo
 
         echo "setting family ${f} and style ${s} in UFO ${ufo}"
         psfsetkeys -p backup=0 -k familyName                         -v "${f}" $ufo

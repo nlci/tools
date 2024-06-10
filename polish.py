@@ -18,20 +18,27 @@ nscale = ratio('hyphen.latn', 'endash.latn')
 mscale = ratio('hyphen.latn', 'emdash.latn')
 hscale = (nscale + mscale) / 2
 
-for dash in ('figuredash', 'endash', 'emdash', 'horizontalbar', 'minus'):
-    indic = font[dash]
-    latin = font[f'{dash}.latn']
-    if dash == 'figuredash' or 'minus':
-        indic.width = zero.width
-    if font.info.familyName != 'Auvaiyar':
-        if dash == 'endash':
+for punct in ('figuredash', 'endash', 'emdash', 'horizontalbar', 'quoteleft', 'quoteright', 'quotedblleft', 'quotedblright'): # 'minus'
+    indic = font[punct]
+    latin = font[f'{punct}.latn']
+
+    # dashes
+    if font.info.familyName != 'Gir':
+        if punct == 'figuredash':
+            indic.width = zero.width
+        if punct == 'endash':
             indic.scaleBy((nscale, 0.78), width=True, height=False)
-        if dash == 'emdash':
+        if punct == 'emdash':
             indic.scaleBy((mscale, 0.78), width=True, height=False)
-        if dash == 'horizontalbar':
+        if punct == 'horizontalbar':
             indic.scaleBy((hscale, 0.78), width=True, height=False)
-    # indic.leftMargin = latin.leftMargin
-    # indic.rightMargin = latin.rightMargin
+
+    # quotes
+    if punct.startswith('quote'):
+        if punct.endswith('left'):
+            indic.leftMargin = latin.leftMargin
+        if punct.endswith('right'):    
+            indic.rightMargin = latin.rightMargin
 
 # Save UFO
 font.changed()
