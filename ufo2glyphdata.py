@@ -69,12 +69,17 @@ def tune_information(filename):
 
 # Command line arguments
 parser = argparse.ArgumentParser(description='Generate glyph_data.csv from UFO')
+parser.add_argument('-a', '--actual', help='Require the use of ActualText in PDFs for the specified script')
+parser.add_argument('-d', '--debug', help='Do not rename glyphs (except for dashes and length)', action='store_true')
 parser.add_argument('-u', '--uni', help='Do not rename glyphs. This assumes glyphs are already AGLFN or start with u or uni', action='store_true')
 parser.add_argument('-g', '--glyphsapp', help='GlyphsApp script extension to strip from glyph names')
+parser.add_argument('--scriptcode', help='Short script code for output')
 parser.add_argument('-v', '--virama', help='Codepoint (hex) of virama to use when the inherent vowel was killed')
 parser.add_argument('-t', '--tail', help='Sort design should group glyphs that end with the same name part', action='store_true')
 parser.add_argument('-l', '--langs', help='File containing which languages affect which glyphs')
 parser.add_argument('-f', '--feats', help='File containing which features affect which glyphs')
+parser.add_argument('-r', '--related', help='Group related characters together', action='store_true')
+parser.add_argument('-m', '--macroman', help='Use the same order as MacRoman for the characters at the start of the font', action='store_true')
 parser.add_argument('-s', '--script', help='Primary script of font to sort glyphs at the end of the font')
 parser.add_argument('aglfn', help='Adobe Glyph List For New Fonts')
 parser.add_argument('ufo', help='UFO to read')
@@ -153,7 +158,6 @@ for glyph in font:
 
     # Output the data for the rest of the glyphs
     glyph_name = effective_glyph_name(glyph.name)
-    new_name = glyph_name
 
     # Split off the suffix (the text after after the full stop)
     # and the script ID, if either (or both) exist.
@@ -161,14 +165,18 @@ for glyph in font:
     ligature_name = glyph_name_parts[0]
     dot_name = glyph_name_parts[1]
     suffix_name = glyph_name_parts[2]
+    addback_remaining = dot_name + suffix_name
 
     # Find the codepoint of each part of the ligature
     codepoints = list()
     latin_script = True
-    base_ligature_name = ligature_name
+    addback_ligature_name = base_ligature_name = ligature_name
     if script_id and base_ligature_name.endswith(script_id):
         latin_script = False
         base_ligature_name = base_ligature_name.replace(script_id, '')
+        if args.scriptcode:
+            addback_ligature_name = base_ligature_name + args.scriptcode
+    addback_name = addback_ligature_name + addback_remaining
     for base_name in base_ligature_name.split('_'):
         # Glyphs used only for building component glyphs generally start with _
         # and will not have a codepoint and do not need to be processed here.
@@ -195,8 +203,9 @@ for glyph in font:
                 codepoints.append(codepoint)
                 found = True
         if not found:
-            print(f'Cannot find base {base_name} in font for glyph {glyph.name}')
+            print(f'Info: {glyph.name} does not have base {base_name}')
 
+    # Construct new glyph name
     if len(codepoints) > 0:
         if codepoints[0] in aglfn:
             # If a character is in the AGLFN or based on it use the AGLFN base name
@@ -218,10 +227,9 @@ for glyph in font:
             new_ligature_name = sep.join(new_ligature_name_parts)
             new_name = ligature_prefix + new_ligature_name
 
-        new_name += dot_name + suffix_name
-
-    # Glyph names in a TTF file cannot have dashes in them
-    new_name = new_name.replace('-', '')
+        new_name += addback_remaining
+    else:
+        new_name = addback_name
 
     usv = ''
     sort_tail = ''
@@ -236,6 +244,8 @@ for glyph in font:
     # This is the default if none of the conditions below matches.
     sort_unicode = sys.maxunicode
     sort_group = 2
+    if args.related:
+        sort_group = 1
 
     # Sort by the codepoint associated with the first part of a ligature,
     # or the codepoint of the base name of the glyph if not a ligature
@@ -250,13 +260,13 @@ for glyph in font:
     # Sort by the codepoint of the character if not a ligature,
     # even if the name looks like it should be a ligature,
     # due to having an underscore in the glyph name.
-    # Unless character is the MacRoman codepage then the character
-    # should be in the first group of characters in the font.
     sort_mac_roman = -1
     if glyph.unicode:
         sort_unicode = glyph.unicode
         sort_group = 1
-        if sort_unicode in mac_roman:
+        # Unless character is in the MacRoman codepage then the character
+        # should be in the first group of characters in the font.
+        if args.macroman and sort_unicode in mac_roman:
             sort_mac_roman = mac_roman[sort_unicode]
             sort_group = 0
 
@@ -267,6 +277,25 @@ for glyph in font:
     # Group characters from main script at the end
     if args.script in fontTools.unicodedata.script_extension(sort_unicode):
         sort_group = 3
+        if not glyph.unicode and not args.related:
+            sort_group = 4
+
+    # Do not rename glyphs (except for dashes) in the specified script
+    if args.actual in fontTools.unicodedata.script_extension(sort_unicode):
+        new_name = addback_name
+
+    # Do not rename glyphs (except for dashes and glyph length) for use with a debugger
+    if args.debug:
+        new_name = addback_name
+
+    # Glyph names in a TTF file cannot have dashes in them
+    new_name = new_name.replace('-', '')
+
+    # Glyph names in a TTF file should not be longer than 31 charactrers
+    trim_name = new_name[:31]
+    if trim_name != new_name:
+        print(f'Warning: for {glyph.name} the name {new_name} was trimmed to {trim_name}')
+    new_name = trim_name
 
     # Record glyph data for later sorting
     gd = GlyphData(glyph.name, new_name, usv, glyph_languages, glyph_features, sort_mac_roman, sort_unicode, sort_group, sort_tail)
@@ -275,7 +304,7 @@ for glyph in font:
     # Check to see if new names are unique
     if not args.uni:
         if new_name in new_names:
-            print(f'New name {new_name} in glyph {glyph.name} is already used')
+            print(f'Warning: New name {new_name} for glyph {glyph.name} is already used')
         new_names.add(new_name)
 
 
