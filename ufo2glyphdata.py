@@ -19,6 +19,7 @@ class GlyphData(object):
         self.features = features
         self.sort_mac_roman = sort_mac_roman
         self.sort_unicode = sort_unicode
+        self.effective_sort_unicode = -1
         self.sort_group = sort_group
         self.sort_tail = sort_tail
         self.design = -1
@@ -72,6 +73,7 @@ parser = argparse.ArgumentParser(description='Generate glyph_data.csv from UFO')
 parser.add_argument('-a', '--actual', help='Require the use of ActualText in PDFs for the specified script')
 parser.add_argument('-d', '--debug', help='Do not rename glyphs (except for dashes and length)', action='store_true')
 parser.add_argument('-u', '--uni', help='Do not rename glyphs. This assumes glyphs are already AGLFN or start with u or uni', action='store_true')
+parser.add_argument('-c', '--case', help='Group case pairs together for the specified script')
 parser.add_argument('-g', '--glyphsapp', help='GlyphsApp script extension to strip from glyph names')
 parser.add_argument('--scriptcode', help='Short script code for output')
 parser.add_argument('-v', '--virama', help='Codepoint (hex) of virama to use when the inherent vowel was killed')
@@ -80,7 +82,7 @@ parser.add_argument('-l', '--langs', help='File containing which languages affec
 parser.add_argument('-f', '--feats', help='File containing which features affect which glyphs')
 parser.add_argument('-r', '--related', help='Group related characters together', action='store_true')
 parser.add_argument('-m', '--macroman', help='Use the same order as MacRoman for the characters at the start of the font', action='store_true')
-parser.add_argument('-s', '--script', help='Primary script of font to sort glyphs at the end of the font')
+parser.add_argument('-s', '--sort', help='Primary script of font to sort glyphs at the end of the font')
 parser.add_argument('aglfn', help='Adobe Glyph List For New Fonts')
 parser.add_argument('ufo', help='UFO to read')
 parser.add_argument('csv', help='CSV file to output', nargs='?', default='glyph_data.csv')
@@ -244,8 +246,10 @@ for glyph in font:
     # This is the default if none of the conditions below matches.
     sort_unicode = sys.maxunicode
     sort_group = 2
+    design_group = 2
     if args.related:
         sort_group = 1
+        design_group = 1
 
     # Sort by the codepoint associated with the first part of a ligature,
     # or the codepoint of the base name of the glyph if not a ligature
@@ -264,6 +268,7 @@ for glyph in font:
     if glyph.unicode:
         sort_unicode = glyph.unicode
         sort_group = 1
+        design_group = 1
         # Unless character is in the MacRoman codepage then the character
         # should be in the first group of characters in the font.
         if args.macroman and sort_unicode in mac_roman:
@@ -275,10 +280,12 @@ for glyph in font:
     glyph_features = features.get(glyph.name, '')
 
     # Group characters from main script at the end
-    if args.script in fontTools.unicodedata.script_extension(sort_unicode):
+    if args.sort in fontTools.unicodedata.script_extension(sort_unicode):
         sort_group = 3
+        design_group = 3
         if not glyph.unicode and not args.related:
             sort_group = 4
+            design_group = 4
 
     # Do not rename glyphs (except for dashes) in the specified script
     if args.actual in fontTools.unicodedata.script_extension(sort_unicode):
@@ -307,6 +314,13 @@ for glyph in font:
             print(f'Warning: New name {new_name} for glyph {glyph.name} is already used')
         new_names.add(new_name)
 
+# Group case pairs together
+if args.case:
+    for gd in glyphs:
+        if args.case in fontTools.unicodedata.script_extension(gd.sort_unicode):
+            glyph_name = gd.name.replace(script_id, '')
+            glyph_name = glyph_name.title() + script_id
+            gd.sort_unicode = cmap.get(glyph_name, gd.sort_unicode)
 
 # Output data
 with open(args.csv, 'w', newline='') as glyph_data_file:

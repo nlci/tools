@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-from fontParts.world import *
+import fontParts.world as fontparts
 import sys
 
 # Open UFO
 ufo = sys.argv[1]
-font = OpenFont(ufo)
+font = fontparts.OpenFont(ufo)
 
 # Modify UFO
 
@@ -18,7 +18,7 @@ for glyph in font:
     if glyph.unicode == 0x0030:
         zero = glyph
     if glyph.unicode == 0x00A0:
-        nbspace = glyph
+        nbsp = glyph
     if glyph.unicode == 0x2007:
         figurespace = glyph
     if glyph.unicode == 0x2008:
@@ -42,10 +42,10 @@ for glyph in font:
     if glyph.unicode == 0x200A:
         hairspace = glyph
     if glyph.unicode == 0x202F:
-        nnbspace = glyph
+        nnbsp = glyph
 
 # Set width of spaces correctly
-nbspace.width = space.width
+nbsp.width = space.width
 figurespace.width = zero.width
 punctuationspace.width = period.width
 
@@ -61,7 +61,7 @@ fourperemspace.width = em/4
 sixperemspace.width = em/6
 thinspace.width = em/5
 hairspace.width = em/13
-nnbspace.width = thinspace.width
+nnbsp.width = thinspace.width
 
 # Save UFO
 font.changed()
