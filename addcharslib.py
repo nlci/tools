@@ -7,8 +7,8 @@ import sys
 from wscript import *
 
 # Latin (and others)
-charis = '../../../latn/fonts/charis/source/masters/CharisSIL'
-gentium = '../../../latn/fonts/gentium_local/instances/Gentium'
+charis = '../../../latn/fonts/charis/source/masters/Charis'
+gentium = '../../../latn/fonts/gentium-local/instances/Gentium'
 andika = '../../../latn/fonts/andika/source/Andika'
 sourcesans = '../../../latn/fonts/source/SourceSansPro'
 exo = '../../../latn/fonts/exo/sources/instance_ufos/Exo'

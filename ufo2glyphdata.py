@@ -205,7 +205,9 @@ for glyph in font:
                 codepoints.append(codepoint)
                 found = True
         if not found:
-            print(f'Info: {glyph.name} does not have base {base_name}')
+            print(f'Info: Cannot find base {base_name} in cmap for glyph {glyph.name}')
+            codepoints = list()
+            break
 
     # Construct new glyph name
     if len(codepoints) > 0:
